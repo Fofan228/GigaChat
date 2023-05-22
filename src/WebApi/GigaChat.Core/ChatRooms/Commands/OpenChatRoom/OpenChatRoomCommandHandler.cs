@@ -6,15 +6,15 @@ using GigaChat.Core.Common.Entities.ChatRooms;
 
 using MediatR;
 
-namespace GigaChat.Core.ChatRooms.Commands.CreateChatRoom;
+namespace GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
 
-public class CreateChatRoomCommandHandler : IRequestHandler<CreateChatRoomCommand, ErrorOr<Created>>
+public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, ErrorOr<ChatRoom>>
 {
     private readonly IChatRoomRepository _chatRoomRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateChatRoomCommandHandler(
+    public OpenChatRoomCommandHandler(
         IChatRoomRepository chatRoomRepository,
         IUnitOfWork unitOfWork,
         IUserRepository userRepository)
@@ -24,14 +24,14 @@ public class CreateChatRoomCommandHandler : IRequestHandler<CreateChatRoomComman
         _userRepository = userRepository;
     }
 
-    public async Task<ErrorOr<Created>> Handle(CreateChatRoomCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ChatRoom>> Handle(OpenChatRoomCommand request, CancellationToken cancellationToken)
     {
         var uniqueUserIds = request.UserIds.Distinct().ToList();
 
         var users = await _userRepository.FindManyByIds(uniqueUserIds)
             .ToListAsync(cancellationToken);
 
-        var chatRoom = new ChatRoom(request.Title)
+        var chatRoom = new ChatRoom(request.OwnerId, request.Title)
         {
             Users = users
         };
@@ -39,6 +39,6 @@ public class CreateChatRoomCommandHandler : IRequestHandler<CreateChatRoomComman
         await _chatRoomRepository.InsertAsync(chatRoom, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Created;
+        return chatRoom;
     }
 }

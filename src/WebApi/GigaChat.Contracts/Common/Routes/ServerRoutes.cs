@@ -2,20 +2,22 @@
 
 public static class ServerRoutes
 {
-    public const string Prefix = "";
-    public const string HealthCheck = $"{Prefix}/health";
+    public const string ServerPrefix = "";
+    public const string ControllerPrefix = ServerPrefix;
+    public const string HubPrefix = $"{ServerPrefix}/hubs";
+    public const string HealthCheck = $"{ServerPrefix}/health";
 
     public static class Controllers
     {
-        public const string ErrorController = $"{Prefix}/error";
-        public const string UserController = $"{Prefix}/users";
-        public const string ChatMessageController = $"{Prefix}/messages";
-        public const string ChatRoomController = $"{Prefix}/rooms";
-        public const string AuthenticationController = $"{Prefix}/auth";
+        public const string ErrorController = $"{ControllerPrefix}/error";
+        public const string UserController = $"{ControllerPrefix}/users";
+        public const string ChatMessageController = $"{ControllerPrefix}/messages";
+        public const string ChatRoomController = $"{ControllerPrefix}/rooms";
+        public const string AuthenticationController = $"{ControllerPrefix}/auth";
     }
 
     public static class Hubs
     {
-        public const string ChatHub = $"{Prefix}/chat";
+        public const string ChatHub = $"{HubPrefix}/chat";
     }
 }

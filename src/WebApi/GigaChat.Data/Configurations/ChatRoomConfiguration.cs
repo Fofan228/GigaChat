@@ -1,7 +1,7 @@
 ﻿using GigaChat.Core.Common.Entities.ChatRooms;
+using GigaChat.Core.Common.Entities.Users;
 using GigaChat.Data.Configurations.Base;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GigaChat.Data.Configurations;
@@ -13,8 +13,15 @@ public class ChatRoomConfiguration : EntityConfigurationBase<ChatRoom, long>
         builder.Property(r => r.Title)
             .IsRequired();
 
+        builder.Property(r => r.OwnerId)
+            .IsRequired();
+
         builder.Property(r => r.IsDeleted)
             .IsRequired();
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(r => r.OwnerId);
 
         builder.HasMany(r => r.Users)
             .WithMany();

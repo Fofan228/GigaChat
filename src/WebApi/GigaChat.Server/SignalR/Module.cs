@@ -1,5 +1,8 @@
 using GigaChat.Contracts.Common.Routes;
-using GigaChat.Server.SignalR.Hubs;
+using GigaChat.Server.SignalR.Hubs.Chat;
+using GigaChat.Server.SignalR.Services;
+
+using Microsoft.AspNetCore.SignalR;
 
 namespace GigaChat.Server.SignalR;
 
@@ -8,6 +11,7 @@ public static class Module
     public static IServiceCollection AddGigaChatSignalR(this IServiceCollection services)
     {
         services.AddSignalR();
+        services.AddScoped<IUserIdProvider, UserIdProvider>();
         return services;
     }
 

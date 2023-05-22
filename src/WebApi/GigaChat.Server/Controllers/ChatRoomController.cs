@@ -1,8 +1,8 @@
 ﻿using GigaChat.Contracts.Http.ChatRooms.Requests;
 using GigaChat.Contracts.Http.ChatRooms.Responses;
 using GigaChat.Contracts.Common.Routes;
-using GigaChat.Core.ChatRooms.Commands.CreateChatRoom;
-using GigaChat.Core.ChatRooms.Commands.SoftDeleteChatRoom;
+using GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
+using GigaChat.Core.ChatRooms.Commands.CloseChatRoom;
 using GigaChat.Core.ChatRooms.Commands.UpdateChatRoomTitle;
 using GigaChat.Core.ChatRooms.Queries.ListChatRooms;
 using GigaChat.Server.Controllers.Common;
@@ -27,10 +27,12 @@ public class ChatRoomController : ApiController
         _mapper = mapper;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ChatRoomResponse>>> ListChatRooms(CancellationToken cancellationToken)
+    [HttpGet("{userId:guid}")]
+    public async Task<ActionResult<IEnumerable<ChatRoomResponse>>> ListChatRooms(
+        [FromRoute] Guid userId,
+        CancellationToken cancellationToken)
     {
-        var query = new ListChatRoomsQuery();
+        var query = new ListUserChatRoomsQuery(userId);
         var result = await _sender.Send(query, cancellationToken);
         if (result.IsError) return Problem(result.Errors);
         var response = _mapper.Map<IEnumerable<ChatRoomResponse>>(result.Value);
@@ -42,7 +44,7 @@ public class ChatRoomController : ApiController
         CreateChatRoomRequest request,
         CancellationToken cancellationToken)
     {
-        var command = _mapper.Map<CreateChatRoomCommand>(request);
+        var command = _mapper.Map<OpenChatRoomCommand>(request);
         var result = await _sender.Send(command, cancellationToken);
         return result.IsError ? Problem(result.Errors) : Created(string.Empty, null);
     }
@@ -62,7 +64,7 @@ public class ChatRoomController : ApiController
         SoftDeleteChatRoomRequest request,
         CancellationToken cancellationToken)
     {
-        var command = _mapper.Map<SoftDeleteChatRoomCommand>(request);
+        var command = _mapper.Map<CloseChatRoomCommand>(request);
         var result = await _sender.Send(command, cancellationToken);
         return result.IsError ? Problem(result.Errors) : NoContent();
     }
