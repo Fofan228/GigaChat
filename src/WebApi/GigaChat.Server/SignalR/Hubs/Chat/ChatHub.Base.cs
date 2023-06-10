@@ -18,6 +18,10 @@ namespace GigaChat.Server.SignalR.Hubs.Chat;
 [SignalRHub(ServerRoutes.Hubs.ChatHub)]
 public partial class ChatHub : Hub<IChatClientHub>
 {
+    private static readonly Dictionary<Guid, string> _connectionIds =
+        new Dictionary<Guid, string>();
+    public static IReadOnlyDictionary<Guid, string> ConnectionIds => _connectionIds;
+
     private readonly ISender _sender;
     private readonly IMapper _mapper;
     private readonly ILogger<ChatHub> _logger;
@@ -37,6 +41,9 @@ public partial class ChatHub : Hub<IChatClientHub>
         var result = await _sender.Send(query, Context.ConnectionAborted);
 
         if (result.IsError) return;
+
+        _connectionIds.Add(userId, Context.ConnectionId);
+
         foreach (var chatRoom in result.Value)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, chatRoom.Id.ToString(), Context.ConnectionAborted);
@@ -44,6 +51,12 @@ public partial class ChatHub : Hub<IChatClientHub>
 
         var chatRoomModels = _mapper.Map<IEnumerable<ChatRoomOutputModel>>(result.Value);
         await Clients.Caller.SendUserChatRooms(chatRoomModels);
+    }
+
+    public override Task OnDisconnectedAsync(Exception? exception)
+    {
+        _connectionIds.Remove(GetUserId());
+        return base.OnDisconnectedAsync(exception);
     }
 
     /// <exception cref="ArgumentNullException" />

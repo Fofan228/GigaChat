@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using System.Reflection;
+
+using FluentValidation;
 
 using GigaChat.Core.Common.Behaviors;
 using GigaChat.Core.Common.Services.Interfaces;
@@ -14,13 +16,17 @@ namespace GigaChat.Core;
 
 public static class Module
 {
-    public static IServiceCollection AddCore(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCore(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        Assembly[] assembliesForMediatRServices)
     {
         var assembly = typeof(Module).Assembly;
 
         services.AddMediatR(options =>
         {
             options.RegisterServicesFromAssembly(assembly);
+            options.RegisterServicesFromAssemblies(assembliesForMediatRServices);
             options.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         });
 
@@ -31,7 +37,7 @@ public static class Module
         services.AddScoped<IPasswordHashProvider, PasswordHashProvider>();
 
         services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
-        
+
         return services;
     }
 }

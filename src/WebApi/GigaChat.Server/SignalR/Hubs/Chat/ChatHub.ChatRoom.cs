@@ -13,12 +13,6 @@ public partial class ChatHub
 
         var result = await _sender.Send(request);
         if (result.IsError) return;
-
-        var chatRoom = result.Value;
-        var chatRoomUserIds = chatRoom.Users.Select(x => x.Id.ToString()).ToList();
-
-        var outputModel = _mapper.Map<ChatRoomOutputModel>(chatRoom);
-        await Clients.Users(chatRoomUserIds).SendInviteToChatRoom(outputModel);
     }
 
     public async Task CloseChatRoom(CloseChatRoomInputModel inputModel)
@@ -27,9 +21,6 @@ public partial class ChatHub
 
         var result = await _sender.Send(request);
         if (result.IsError) return;
-
-        var outputModel = _mapper.Map<CloseChatRoomOutputModel>(result.Value);
-        await Clients.Group(inputModel.ChatRoomId.ToString()).SendCloseChatRoom(outputModel);
     }
 
     public Task InviteToChatRoom()
