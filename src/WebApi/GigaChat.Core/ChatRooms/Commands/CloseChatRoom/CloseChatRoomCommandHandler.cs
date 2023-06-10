@@ -7,7 +7,7 @@ using MediatR;
 
 namespace GigaChat.Core.ChatRooms.Commands.CloseChatRoom;
 
-public class CloseChatRoomCommandHandler : IRequestHandler<CloseChatRoomCommand, ErrorOr<long>>
+public class CloseChatRoomCommandHandler : IRequestHandler<CloseChatRoomCommand, ErrorOr<CloseChatRoomResult>>
 {
     private readonly IChatRoomRepository _chatRoomRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -18,7 +18,7 @@ public class CloseChatRoomCommandHandler : IRequestHandler<CloseChatRoomCommand,
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<long>> Handle(CloseChatRoomCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<CloseChatRoomResult>> Handle(CloseChatRoomCommand request, CancellationToken cancellationToken)
     {
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId);
         if (chatRoom is null) throw new NotImplementedException();
@@ -29,6 +29,6 @@ public class CloseChatRoomCommandHandler : IRequestHandler<CloseChatRoomCommand,
         await _chatRoomRepository.UpdateAsync(chatRoom, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return chatRoom.Id;
+        return new CloseChatRoomResult(chatRoom.Id);
     }
 }
