@@ -14,14 +14,10 @@ namespace GigaChat.Server.SignalR.EventHandlers.Chat;
 public class CloseChatRoomEventHandler : IRequestHandler<CloseChatRoomEvent>
 {
     private readonly IHubContext<ChatHub, IChatClientHub> _hubContext;
-    private readonly IMapper _mapper;
 
-    public CloseChatRoomEventHandler(
-        IHubContext<ChatHub, IChatClientHub> hubContext,
-        IMapper mapper)
+    public CloseChatRoomEventHandler(IHubContext<ChatHub, IChatClientHub> hubContext)
     {
         _hubContext = hubContext;
-        _mapper = mapper;
     }
 
     public async Task Handle(CloseChatRoomEvent request, CancellationToken cancellationToken)
