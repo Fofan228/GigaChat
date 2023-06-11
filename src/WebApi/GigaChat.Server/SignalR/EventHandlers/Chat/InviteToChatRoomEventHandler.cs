@@ -1,5 +1,5 @@
 using GigaChat.Contracts.Hubs.Chat;
-using GigaChat.Contracts.Hubs.Chat.Models.Input;
+using GigaChat.Contracts.Hubs.Chat.Models.Output;
 using GigaChat.Core.ChatRooms.Events;
 using GigaChat.Server.SignalR.Hubs.Chat;
 

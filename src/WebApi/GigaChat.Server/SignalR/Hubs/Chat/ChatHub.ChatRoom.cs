@@ -1,6 +1,8 @@
 using GigaChat.Contracts.Hubs.Chat.Models.Input;
 using GigaChat.Contracts.Hubs.Chat.Models.Output;
 using GigaChat.Core.ChatRooms.Commands.CloseChatRoom;
+using GigaChat.Core.ChatRooms.Commands.ExitFromChatRoom;
+using GigaChat.Core.ChatRooms.Commands.JoinToChatRoom;
 using GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
 
 namespace GigaChat.Server.SignalR.Hubs.Chat;
@@ -33,13 +35,19 @@ public partial class ChatHub
         return Task.CompletedTask;
     }
 
-    public Task JoinToChatRoom()
+    public async Task JoinToChatRoom(JoinToChatRoomInputModel inputModel)
     {
-        return Task.CompletedTask;
+        var request = _mapper.Map<JoinToChatRoomCommand>((GetUserId(), inputModel));
+        
+        var result = await _sender.Send(request);
+        if (result.IsError) return;
     }
 
-    public Task ExitFromChatRoom()
+    public async Task ExitFromChatRoom(ExitFromChatRoomInputModel inputModel)
     {
-        return Task.CompletedTask;
+        var request = _mapper.Map<ExitFromChatRoomCommand>((GetUserId(), inputModel));
+        
+        var result = await _sender.Send(request);
+        if (result.IsError) return;
     }
 }
