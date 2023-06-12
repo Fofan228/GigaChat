@@ -3,7 +3,7 @@ import {HubConnection} from '@microsoft/signalr/dist/esm/HubConnection';
 import constants from '../constants'
 export function buildConnection(token: string): HubConnection {
     return new HubConnectionBuilder()
-        .withUrl(constants.API_URL, { accessTokenFactory: () => token })
+        .withUrl(constants.API_URL + '/hubs/chat', { accessTokenFactory: () => token })
         .withAutomaticReconnect()
         .configureLogging(LogLevel.Debug)
         .build();
