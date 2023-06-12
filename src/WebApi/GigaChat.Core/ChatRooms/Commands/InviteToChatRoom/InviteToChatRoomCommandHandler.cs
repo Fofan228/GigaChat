@@ -28,11 +28,12 @@ public class InviteToChatRoomCommandHandler : IRequestHandler<InviteToChatRoomCo
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<InviteToChatRoomResult>> Handle(InviteToChatRoomCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<InviteToChatRoomResult>> Handle(InviteToChatRoomCommand request,
+        CancellationToken cancellationToken)
     {
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
         if (chatRoom is null) throw new NotImplementedException();
-        
+
         var user = await _userRepository.FindOneByIdAsync(request.UserId, cancellationToken);
         if (user is null) throw new NotImplementedException();
 

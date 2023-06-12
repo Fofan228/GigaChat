@@ -6,16 +6,16 @@ using GigaChat.Core.Common.Repositories.Interfaces;
 
 using MediatR;
 
-namespace GigaChat.Core.ChatRooms.Commands.ExitFromChatRoom;
+namespace GigaChat.Core.ChatRooms.Commands.KickFromChatRoom;
 
-public class ExitFromChatRoomCommandHandler : IRequestHandler<ExitFromChatRoomCommand, ErrorOr<ExitFromChatRoomResult>>
+public class KickFromChatRoomCommandHandler : IRequestHandler<KickFromChatRoomCommand, ErrorOr<KickFromChatRoomResult>>
 {
     private readonly ISender _sender;
     private readonly IUserRepository _userRepository;
     private readonly IChatRoomRepository _chatRoomRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ExitFromChatRoomCommandHandler(
+    public KickFromChatRoomCommandHandler(
         ISender sender,
         IUserRepository userRepository,
         IChatRoomRepository chatRoomRepository,
@@ -27,7 +27,7 @@ public class ExitFromChatRoomCommandHandler : IRequestHandler<ExitFromChatRoomCo
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<ExitFromChatRoomResult>> Handle(ExitFromChatRoomCommand request,
+    public async Task<ErrorOr<KickFromChatRoomResult>> Handle(KickFromChatRoomCommand request,
         CancellationToken cancellationToken)
     {
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
@@ -36,14 +36,20 @@ public class ExitFromChatRoomCommandHandler : IRequestHandler<ExitFromChatRoomCo
         var user = await _userRepository.FindOneByIdAsync(request.UserId, cancellationToken);
         if (user is null) throw new NotImplementedException();
 
-        chatRoom.Users.Remove(user);
+        var owner = await _userRepository.FindOneByIdAsync(request.OwnerId, cancellationToken);
+        if (owner is null) throw new NotImplementedException();
+
+        if (request.OwnerId == chatRoom.OwnerId)
+            chatRoom.Users.Remove(user);
+        else
+            throw new NotImplementedException();
 
         await _chatRoomRepository.UpdateAsync(chatRoom, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var exitFromChatRoomEvent = new ExitFromChatRoomEvent(chatRoom, user.Id);
+        var exitFromChatRoomEvent = new KickFromChatRoomEvent(chatRoom, user.Id);
         await _sender.Send(exitFromChatRoomEvent, cancellationToken);
 
-        return new ExitFromChatRoomResult(chatRoom.Id, user.Id);
+        return new KickFromChatRoomResult(chatRoom.Id, user.Id, chatRoom.OwnerId);
     }
 }

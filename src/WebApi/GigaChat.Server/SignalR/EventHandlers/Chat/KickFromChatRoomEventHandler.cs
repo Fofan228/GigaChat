@@ -3,36 +3,32 @@ using GigaChat.Contracts.Hubs.Chat.Models.Output;
 using GigaChat.Core.ChatRooms.Events;
 using GigaChat.Server.SignalR.Hubs.Chat;
 
-using MapsterMapper;
-
 using MediatR;
 
 using Microsoft.AspNetCore.SignalR;
 
 namespace GigaChat.Server.SignalR.EventHandlers.Chat;
 
-public class ExitFromChatRoomEventHandler : IRequestHandler<ExitFromChatRoomEvent>
+public class KickFromChatRoomEventHandler : IRequestHandler<KickFromChatRoomEvent>
 {
     private readonly IHubContext<ChatHub, IChatClientHub> _hubContext;
-    private readonly IMapper _mapper;
 
-    public ExitFromChatRoomEventHandler(IHubContext<ChatHub, IChatClientHub> hubContext, IMapper mapper)
+    public KickFromChatRoomEventHandler(IHubContext<ChatHub, IChatClientHub> hubContext)
     {
         _hubContext = hubContext;
-        _mapper = mapper;
     }
 
-    public async Task Handle(ExitFromChatRoomEvent request, CancellationToken cancellationToken)
+    public async Task Handle(KickFromChatRoomEvent request, CancellationToken cancellationToken)
     {
         var chatRoom = request.ChatRoom;
         var userId = request.UserId;
-        var outputModel = new ExitFromChatRoomOutputModel(chatRoom.Id, userId);
+        var outputModel = new KickFromChatRoomOutputModel(chatRoom.Id, userId, chatRoom.OwnerId);
 
         if (ChatHub.ConnectionIds.TryGetValue(userId, out var connectionId))
             await _hubContext.Groups.RemoveFromGroupAsync(connectionId, chatRoom.Id.ToString(), cancellationToken);
 
         await _hubContext.Clients
             .Users(userId.ToString())
-            .SendExitFromChatRoom(outputModel);
+            .SendKickFromChatRoom(outputModel);
     }
 }

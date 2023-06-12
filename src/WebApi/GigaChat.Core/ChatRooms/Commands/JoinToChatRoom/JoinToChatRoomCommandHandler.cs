@@ -27,14 +27,15 @@ public class JoinToChatRoomCommandHandler : IRequestHandler<JoinToChatRoomComman
         _userRepository = userRepository;
     }
 
-    public async Task<ErrorOr<JoinToChatRoomResult>> Handle(JoinToChatRoomCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<JoinToChatRoomResult>> Handle(JoinToChatRoomCommand request,
+        CancellationToken cancellationToken)
     {
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
         if (chatRoom is null) throw new NotImplementedException();
-        
+
         var user = await _userRepository.FindOneByIdAsync(request.UserId, cancellationToken);
         if (user is null) throw new NotImplementedException();
-        
+
         chatRoom.Users.Add(user);
 
         await _chatRoomRepository.UpdateAsync(chatRoom, cancellationToken);

@@ -1,7 +1,5 @@
 ﻿using ErrorOr;
 
-using GigaChat.Core.Common.Entities.ChatRooms;
-
 using MediatR;
 
 namespace GigaChat.Core.ChatRooms.Commands.InviteToChatRoom;

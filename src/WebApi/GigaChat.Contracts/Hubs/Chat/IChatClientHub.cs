@@ -12,4 +12,5 @@ public interface IChatClientHub
     Task SendJoinToChatRoom(JoinToChatRoomOutputModel outputModel);
     Task SendExitFromChatRoom(ExitFromChatRoomOutputModel outputModel);
     Task SendInviteToChatRoom(InviteToChatRoomOutputModel outputModel);
+    Task SendKickFromChatRoom(KickFromChatRoomOutputModel outputModel);
 }

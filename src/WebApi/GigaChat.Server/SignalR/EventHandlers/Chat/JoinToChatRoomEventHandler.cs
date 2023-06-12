@@ -24,10 +24,10 @@ public class JoinToChatRoomEventHandler : IRequestHandler<JoinToChatRoomEvent>
 
     public async Task Handle(JoinToChatRoomEvent request, CancellationToken cancellationToken)
     {
-        var outputModel = _mapper.Map<JoinToChatRoomOutputModel>(request);
         var chatRoom = request.ChatRoom;
         var userId = request.UserId;
-        
+        var outputModel = new JoinToChatRoomOutputModel(chatRoom.Id, userId);
+
         if (ChatHub.ConnectionIds.TryGetValue(userId, out var connectionId))
             await _hubContext.Groups.AddToGroupAsync(connectionId, chatRoom.Id.ToString(), cancellationToken);
 
