@@ -37,9 +37,6 @@ public class InviteToChatRoomCommandHandler : IRequestHandler<InviteToChatRoomCo
         var user = await _userRepository.FindOneByIdAsync(request.UserId, cancellationToken);
         if (user is null) throw new NotImplementedException();
 
-        var owner = await _userRepository.FindOneByIdAsync(request.OwnerId, cancellationToken);
-        if (owner is null) throw new NotImplementedException();
-
         if (request.OwnerId == chatRoom.OwnerId)
             chatRoom.Users.Add(user);
         else
