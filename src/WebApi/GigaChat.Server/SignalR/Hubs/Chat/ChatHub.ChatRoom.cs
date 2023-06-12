@@ -2,6 +2,7 @@ using GigaChat.Contracts.Hubs.Chat.Models.Input;
 using GigaChat.Contracts.Hubs.Chat.Models.Output;
 using GigaChat.Core.ChatRooms.Commands.CloseChatRoom;
 using GigaChat.Core.ChatRooms.Commands.ExitFromChatRoom;
+using GigaChat.Core.ChatRooms.Commands.InviteToChatRoom;
 using GigaChat.Core.ChatRooms.Commands.JoinToChatRoom;
 using GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
 
@@ -25,9 +26,12 @@ public partial class ChatHub
         if (result.IsError) return;
     }
 
-    public Task InviteToChatRoom()
+    public async Task InviteToChatRoom(InviteToChatRoomInputModel inputModel)
     {
-        return Task.CompletedTask;
+        var request = _mapper.Map<InviteToChatRoomCommand>((GetUserId(), inputModel));
+
+        var result = await _sender.Send(request);
+        if (result.IsError) return;
     }
 
     public Task KickFromChatRoom()

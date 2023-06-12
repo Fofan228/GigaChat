@@ -43,7 +43,7 @@ public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, E
         await _chatRoomRepository.InsertAsync(chatRoom, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var inviteToChatRoomEvent = new InviteToChatRoomEvent(chatRoom);
+        var inviteToChatRoomEvent = new OpenToChatRoomEvent(chatRoom);
         await _sender.Send(inviteToChatRoomEvent, cancellationToken);
 
         return chatRoom;

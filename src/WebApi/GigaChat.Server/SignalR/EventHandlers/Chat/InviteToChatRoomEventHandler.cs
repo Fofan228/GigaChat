@@ -1,6 +1,7 @@
-using GigaChat.Contracts.Hubs.Chat;
+﻿using GigaChat.Contracts.Hubs.Chat;
 using GigaChat.Contracts.Hubs.Chat.Models.Output;
 using GigaChat.Core.ChatRooms.Events;
+using GigaChat.Core.Common.Entities.ChatRooms;
 using GigaChat.Server.SignalR.Hubs.Chat;
 
 using MapsterMapper;
@@ -26,19 +27,15 @@ public class InviteToChatRoomEventHandler : IRequestHandler<InviteToChatRoomEven
 
     public async Task Handle(InviteToChatRoomEvent request, CancellationToken cancellationToken)
     {
-        var outputModel = _mapper.Map<ChatRoomOutputModel>(request.ChatRoom);
+        var outputModel = _mapper.Map<InviteToChatRoomOutputModel>(request);
         var chatRoom = request.ChatRoom;
-        //TODO Наверное Users нужно перенести в IAsyncEnumerable ListUsers
-        var userIds = chatRoom.Users.Select(x => x.Id).ToList();
+        var userId = request.UserId;
 
-        foreach (var userId in userIds)
-        {
-            if (ChatHub.ConnectionIds.TryGetValue(userId, out var connectionId))
-                await _hubContext.Groups.AddToGroupAsync(connectionId, chatRoom.Id.ToString(), cancellationToken);
-        }
+        if (ChatHub.ConnectionIds.TryGetValue(userId, out var connectionId))
+            await _hubContext.Groups.AddToGroupAsync(connectionId, chatRoom.Id.ToString(), cancellationToken);
 
         await _hubContext.Clients
-            .Users(userIds.Select(x => x.ToString()))
+            .Users(userId.ToString())
             .SendInviteToChatRoom(outputModel);
     }
 }
