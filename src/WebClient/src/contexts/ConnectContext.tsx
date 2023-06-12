@@ -1,7 +1,8 @@
 import { HubConnection } from "@microsoft/signalr"
-import { createContext, ReactNode, useState, useEffect } from "react"
+import {createContext, ReactNode, useState, useEffect, useContext} from "react"
 import { Message, User } from "../models/_index"
 import { buildConnection, startConnection } from '../utils/hubUtils'
+import {UserContext} from "./_index";
 
 interface IConnectContext {
     connection?: HubConnection
@@ -15,8 +16,10 @@ export const ConnectContextProvider = ({ children }: { children: ReactNode }) =>
     const [connection, setConnection] = useState<HubConnection>()
     const [connectionStarted, setConnectionStarted] = useState(false)
 
+    const userCtx = useContext(UserContext)
+
     const startNewConnection = () => {
-        const newConnection = buildConnection()
+        const newConnection = buildConnection(userCtx?.token || "")
         setConnection(newConnection)
     }
 

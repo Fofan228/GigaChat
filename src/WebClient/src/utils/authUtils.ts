@@ -14,6 +14,10 @@ function parseJwt (token: string) {
 
 const TOKEN_KEY = 'token'
 
+export function getToken() {
+    return localStorage.getItem(TOKEN_KEY) || ""
+}
+
 export async function registration(name: string, login: string, password: string) {
     return await axios.post<Token>(constants.API_URL + constants.AUTH_URL + '/register', {
         name,
