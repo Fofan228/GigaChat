@@ -5,30 +5,23 @@ import { ThemeProvider } from '@mui/material/styles';
 import App from './App';
 import lightTheme from './themes/lightTheme';
 import './index.css'
-import { HubContextProvider } from './contexts/HubContext';
-import axios from 'axios';
+import {BrowserRouter} from 'react-router-dom'
+import {UserContextProvider, NotificationProvider} from "./contexts/_index";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 root.render(
     <React.StrictMode>
-        <ThemeProvider theme={lightTheme} >
-            <CssBaseline />
-
-            <HubContextProvider>
-                <App />
-            </HubContextProvider>
-            
-        </ThemeProvider>
+        <BrowserRouter>
+            <ThemeProvider theme={lightTheme} >
+                <CssBaseline />
+                <NotificationProvider>
+                    <UserContextProvider>
+                        <App />
+                    </UserContextProvider>
+                </NotificationProvider>
+            </ThemeProvider>
+        </BrowserRouter>
     </React.StrictMode>
 );
-async function fetchDanilku() {
-        const superData = await axios.get('http://localhost:5000/api/error')
-        console.log('fetched data ---', superData)
-    }
-fetchDanilku().then()
-console.log([
-    ["route", window.location.pathname],
-    ["location ---", window.location],
-])

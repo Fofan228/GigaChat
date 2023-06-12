@@ -11,7 +11,7 @@ Serilog:
       Args:
         path: "logs.log"
 ConnectionStrings:
-  GigaChatDb: "Host=localhost;Port=5432;Database=ExampleDbName;Username=ExampleUsername;Password=ExamplePassword"
+  GigaChatDb: "Host=localhost;Port=5432;Database=GigaChat;Username=postgres;Password=123456"
 JwtSettings:
   Issuer: "http://localhost:5000"
   Audience: "http://localhost:5000"

@@ -1,9 +1,9 @@
 import {HubConnectionBuilder, LogLevel} from '@microsoft/signalr';
 import {HubConnection} from '@microsoft/signalr/dist/esm/HubConnection';
-
+import constants from '../constants'
 export function buildConnection(): HubConnection {
     return new HubConnectionBuilder()
-        .withUrl("http://localhost:5100/chat")
+        .withUrl(constants.API_URL)
         .withAutomaticReconnect()
         .configureLogging(LogLevel.Information)
         .build();

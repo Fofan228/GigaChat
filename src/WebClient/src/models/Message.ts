@@ -1,4 +1,6 @@
 export interface Message {
-    username: string
-    message: string
+    id: number
+    text: string
+    chatRoomId: string
+    userId: string
 }

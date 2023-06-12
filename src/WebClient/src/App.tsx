@@ -1,58 +1,31 @@
-import { Login, ChatRoom } from './pages/_index';
-import { Box, Container, Snackbar, Alert } from '@mui/material';
-import { useState, useEffect, useContext } from 'react';
-import { HubContext, UserContextProvider } from './contexts/_index';
+import React from "react"
+import {Route, Routes } from "react-router-dom"
+import IndexContainer from "./pages/AppContainer/IndexContainer"
+import Menu from "./pages/Menu/Menu";
+import {AuthProtect} from "./route-protects/_index"
+import {Login} from "./pages/_index";
+import NotFound from "./pages/Empty/NotFound";
+import NotAccess from "./pages/Empty/NotAccess";
+import NoAuthProtection from "./route-protects/NoAuthProtection";
 
 const App = () => {
-
-    const hubCtx = useContext(HubContext);
-
-    const [inRoom, setInRoom] = useState(false);
-    const [alertOpen, setAlertOpen] = useState(false);
-
-    useEffect(() => {
-
-        if (hubCtx?.connectionStarted) {
-            hubCtx?.connection?.onclose(() => {
-                setInRoom(false)
-            });
-        }
-    }, [hubCtx?.connection]);
-
     return (
         <>
-            <UserContextProvider>
-                <Box sx={{ width: "100%", height: '100vh' }}>
-                    <Container>
-                        <Box sx={{
-                            minWidth: "100%", minHeight: "100vh", padding: "20px",
-                            display: "flex", flexDirection: "column", justifyContent: "center", alignItems: 'center',
-                        }}>
-                            {hubCtx?.connection !== null &&
-                                <>
-                                    {inRoom ? <ChatRoom /> :
-                                        <Login
-                                            onJoined={(success) => {
+            <Routes>
+                <Route path={'/'} element={<IndexContainer />}>
 
-                                                if (!success) {
-                                                    setAlertOpen(true)
-                                                }
-                                                setInRoom(success)
-                                            }} />
-                                    }
-                                </>}
-                        </Box>
-                    </Container>
-                </Box>
-            </UserContextProvider>
+                    <Route element={<NoAuthProtection />}>
+                        <Route path={'auth'} element={<Login />} />
+                    </Route>
 
+                    <Route element={<AuthProtect />}>
+                        <Route index element={<Menu />}/>
+                        <Route path={'chat'} element={<NotAccess />}/>
+                    </Route>
 
-            <Snackbar open={alertOpen} autoHideDuration={1500}>
-                <Alert severity="error" sx={{ width: '100%' }} variant="filled">
-                    Couldn't join the room!
-                </Alert>
-            </Snackbar>
-
+                    <Route path={'*'} element={<NotFound />} />
+                </Route>
+            </Routes>
         </>
     )
 };
