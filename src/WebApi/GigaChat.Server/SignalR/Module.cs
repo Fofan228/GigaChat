@@ -11,7 +11,7 @@ public static class Module
     public static IServiceCollection AddGigaChatSignalR(this IServiceCollection services)
     {
         services.AddSignalR();
-        services.AddScoped<IUserIdProvider, UserIdProvider>();
+        services.AddSingleton<IUserIdProvider, UserIdProvider>();
         return services;
     }
 

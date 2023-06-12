@@ -3,6 +3,7 @@ using System;
 using GigaChat.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GigaChat.Migrations.Migrations
 {
     [DbContext(typeof(GigaChatDbContext))]
-    partial class GigaChatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230612175117_FuckingShit")]
+    partial class FuckingShit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

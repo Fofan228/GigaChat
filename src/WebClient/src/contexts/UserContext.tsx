@@ -1,20 +1,25 @@
-import { createContext, ReactNode, useState } from "react";
+import {createContext, ReactNode, useEffect, useState} from "react";
+import {User} from "../models/User";
+import {getToken, getUser} from "../utils/authUtils";
 
 interface IUserContext {
-    username: string;
-    setUsername: (username: string) => void;
-    roomId: string;
-    setRoomId: (username: string) => void;
+    user: User | null
+    setUser: (user: User | null) => void;
+    token: string
 }
 
 export const UserContext = createContext<IUserContext | null>(null)
 
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
-    const [username, setUsername] = useState("");
-    const [roomId, setRoomId] = useState("");
+    const [user, setUser] = useState(getUser());
+    const [token, setToken] = useState(getToken())
+
+    useEffect(() => {
+        setToken(getToken())
+    }, [user])
 
     return (
-        <UserContext.Provider value={{ username, setUsername, roomId, setRoomId }}>
+        <UserContext.Provider value={{ user, setUser, token }}>
             {children}
         </UserContext.Provider>
     );

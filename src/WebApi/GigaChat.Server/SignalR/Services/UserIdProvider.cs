@@ -8,6 +8,6 @@ public class UserIdProvider : IUserIdProvider
 {
     public string? GetUserId(HubConnectionContext connection)
     {
-        return connection.User.Claims.FirstOrDefault(x => x.Type == UserClaimTypes.Id)?.Value;
+        return connection.User.Claims.FirstOrDefault(x => x.Type.Equals(UserClaimTypes.Id, StringComparison.Ordinal))?.Value;
     }
 }

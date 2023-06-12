@@ -1,5 +1,7 @@
 ﻿using GigaChat.Server.Authentication.Schemes;
 
+using Microsoft.AspNetCore.Authentication;
+
 namespace GigaChat.Server.Authentication;
 
 public static class Module

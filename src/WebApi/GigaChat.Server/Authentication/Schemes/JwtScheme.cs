@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Claims;
+using System.Text;
 
 using GigaChat.Contracts.Common.Routes;
 using GigaChat.Core.Common.Services.Models;
@@ -55,14 +56,17 @@ public static class JwtScheme
                 OnTokenValidated = context =>
                 {
                     var claims = context.Principal!.Claims.ToArray();
+                    var newClaims = new ClaimsIdentity();
 
-                    var userId = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Subject)!.Value;
-                    var username = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Name)!.Value;
-                    var nickname = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.NickName)!.Value;
+                    var userId = claims.First(x => x.Type.Equals(ClaimTypes.NameIdentifier, StringComparison.Ordinal)).Value;
+                    var username = claims.First(x => x.Type.Equals(JwtClaimTypes.Name, StringComparison.Ordinal)).Value;
+                    var nickname = claims.First(x => x.Type.Equals(JwtClaimTypes.NickName, StringComparison.Ordinal)).Value;
 
-                    claims.Append(new(UserClaimTypes.Id, userId));
-                    claims.Append(new(UserClaimTypes.Name, username));
-                    claims.Append(new(UserClaimTypes.NickName, nickname));
+                    newClaims.AddClaim(new(UserClaimTypes.Id, userId));
+                    newClaims.AddClaim(new(UserClaimTypes.Name, username));
+                    newClaims.AddClaim(new(UserClaimTypes.NickName, nickname));
+
+                    context.Principal!.AddIdentity(newClaims);
 
                     return Task.CompletedTask;
                 }
