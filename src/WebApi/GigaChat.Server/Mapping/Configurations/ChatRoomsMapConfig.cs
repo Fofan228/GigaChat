@@ -1,5 +1,6 @@
 using GigaChat.Contracts.Http.ChatRooms.Requests;
 using GigaChat.Contracts.Http.ChatRooms.Responses;
+using GigaChat.Contracts.Hubs.ChatRoom.Models.Input;
 using GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
 using GigaChat.Core.ChatRooms.Commands.CloseChatRoom;
 using GigaChat.Core.ChatRooms.Commands.UpdateChatRoomTitle;
@@ -17,5 +18,6 @@ public class ChatRoomsMapConfig : IRegister
         config.NewConfig<CreateChatRoomRequest, OpenChatRoomCommand>();
         config.NewConfig<UpdateChatRoomTitleRequest, UpdateChatRoomTitleCommand>();
         config.NewConfig<SoftDeleteChatRoomRequest, CloseChatRoomCommand>();
+        config.NewConfig<(Guid id, OpenChatRoomInputModel), OpenChatRoomCommand>().Map(m => m.OwnerId, s => s.id);
     }
 }
