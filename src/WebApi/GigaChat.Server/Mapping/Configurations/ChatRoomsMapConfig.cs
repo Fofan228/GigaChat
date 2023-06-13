@@ -1,9 +1,5 @@
-using GigaChat.Contracts.Http.ChatRooms.Requests;
-using GigaChat.Contracts.Http.ChatRooms.Responses;
+using GigaChat.Contracts.Hubs.Chat.Models.Input;
 using GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
-using GigaChat.Core.ChatRooms.Commands.CloseChatRoom;
-using GigaChat.Core.ChatRooms.Commands.UpdateChatRoomTitle;
-using GigaChat.Core.Common.Entities.ChatRooms;
 
 using Mapster;
 
@@ -13,9 +9,6 @@ public class ChatRoomsMapConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<ChatRoom, ChatRoomResponse>();
-        config.NewConfig<CreateChatRoomRequest, OpenChatRoomCommand>();
-        config.NewConfig<UpdateChatRoomTitleRequest, UpdateChatRoomTitleCommand>();
-        config.NewConfig<SoftDeleteChatRoomRequest, CloseChatRoomCommand>();
+        config.NewConfig<(Guid id, OpenChatRoomInputModel), OpenChatRoomCommand>().Map(m => m.OwnerId, s => s.id);
     }
 }
