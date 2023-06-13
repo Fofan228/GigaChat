@@ -1,5 +1,6 @@
 using ErrorOr;
 
+using GigaChat.Core.ChatRooms.Events;
 using GigaChat.Core.Common.Repositories.Common.Interfaces;
 using GigaChat.Core.Common.Repositories.Interfaces;
 using GigaChat.Core.Common.Entities.ChatMessages;
@@ -14,32 +15,43 @@ public class SendTextMessageCommandHandler : IRequestHandler<SendTextMessageComm
     private readonly IChatRoomRepository _chatRoomRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
-
+    private readonly ISender _sender;
+    
     public SendTextMessageCommandHandler(
         IChatMessageRepository chatMessageRepository,
         IChatRoomRepository chatRoomRepository,
         IUserRepository userRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ISender sender)
     {
         _chatMessageRepository = chatMessageRepository;
         _chatRoomRepository = chatRoomRepository;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
+        _sender = sender;
     }
 
     public async Task<ErrorOr<ChatMessage>> Handle(
         SendTextMessageCommand request,
         CancellationToken cancellationToken)
     {
-        if (!await _chatRoomRepository.ExistsWithIdAsync(request.ChatRoomId, cancellationToken))
+        var user = await _userRepository.FindOneByIdAsync(request.UserId, cancellationToken);
+        var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
+        
+        if (user is null)
             throw new NotImplementedException();
-        if (!await _userRepository.ExistsWithIdAsync(request.UserId, cancellationToken))
+        if (chatRoom is null)
+            throw new NotImplementedException();
+        if (!chatRoom.Users.Any(u => u.Id == user.Id))
             throw new NotImplementedException();
 
         var chatMessage = new ChatMessage(request.Text, request.ChatRoomId, request.UserId);
 
         await _chatMessageRepository.InsertAsync(chatMessage, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        var sendTextMessageEvent = new SendTextMessageEvent(chatMessage, user);
+        await _sender.Send(sendTextMessageEvent, cancellationToken);
 
         return chatMessage;
     }

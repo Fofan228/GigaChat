@@ -14,10 +14,6 @@ public class ChatRoomsMapConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<ChatRoom, ChatRoomResponse>();
-        config.NewConfig<CreateChatRoomRequest, OpenChatRoomCommand>();
-        config.NewConfig<UpdateChatRoomTitleRequest, UpdateChatRoomTitleCommand>();
-        config.NewConfig<SoftDeleteChatRoomRequest, CloseChatRoomCommand>();
         config.NewConfig<(Guid id, OpenChatRoomInputModel), OpenChatRoomCommand>().Map(m => m.OwnerId, s => s.id);
     }
 }
