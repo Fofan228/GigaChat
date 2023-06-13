@@ -4,6 +4,7 @@ using GigaChat.Contracts.Http.Users.Responses;
 using GigaChat.Core.Users.Commands.SoftDeleteUser;
 using GigaChat.Core.Users.Commands.UpdateUsername;
 using GigaChat.Core.Users.Queries.ListUsers;
+using GigaChat.Core.Users.Queries.ListUsersByChatRoomId;
 using GigaChat.Server.Controllers.Common;
 
 using MapsterMapper;
@@ -30,6 +31,18 @@ public class UserController : ApiController
     public async Task<ActionResult<IEnumerable<UserResponse>>> ListUsers(CancellationToken cancellationToken)
     {
         var query = new ListUsersQuery();
+        var result = await _sender.Send(query, cancellationToken);
+        if (result.IsError) return Problem(result.Errors);
+        var response = _mapper.Map<IEnumerable<UserResponse>>(result.Value);
+        return Ok(response);
+    }
+
+    [HttpGet("{chatRoomId:long}")]
+    public async Task<ActionResult<IEnumerable<UserResponse>>> ListUsersByChatRoomId(
+        [FromRoute] long chatRoomId,
+        CancellationToken cancellationToken)
+    {
+        var query = new ListUsersByChatRoomIdQuery(chatRoomId);
         var result = await _sender.Send(query, cancellationToken);
         if (result.IsError) return Problem(result.Errors);
         var response = _mapper.Map<IEnumerable<UserResponse>>(result.Value);
