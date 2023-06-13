@@ -4,4 +4,4 @@ using MediatR;
 
 namespace GigaChat.Core.ChatRooms.Events;
 
-public record InviteToChatRoomEvent(ChatRoom ChatRoom) : IRequest;
+public record InviteToChatRoomEvent(ChatRoom ChatRoom, Guid UserId) : IRequest;

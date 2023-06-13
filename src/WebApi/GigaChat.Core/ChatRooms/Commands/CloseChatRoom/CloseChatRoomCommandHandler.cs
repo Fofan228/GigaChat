@@ -24,11 +24,12 @@ public class CloseChatRoomCommandHandler : IRequestHandler<CloseChatRoomCommand,
         _sender = sender;
     }
 
-    public async Task<ErrorOr<CloseChatRoomResult>> Handle(CloseChatRoomCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<CloseChatRoomResult>> Handle(CloseChatRoomCommand request,
+        CancellationToken cancellationToken)
     {
-        var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId);
+        var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
         if (chatRoom is null) throw new NotImplementedException();
-        if (chatRoom.OwnerId != request.userId) throw new NotImplementedException();
+        if (chatRoom.OwnerId != request.UserId) throw new NotImplementedException();
 
         chatRoom.IsDeleted = true;
 

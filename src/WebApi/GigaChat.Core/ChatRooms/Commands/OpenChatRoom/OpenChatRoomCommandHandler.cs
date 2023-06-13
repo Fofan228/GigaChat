@@ -5,6 +5,7 @@ using GigaChat.Core.Common.Repositories.Interfaces;
 using GigaChat.Core.Common.Entities.ChatRooms;
 
 using MediatR;
+
 using GigaChat.Core.ChatRooms.Events;
 
 namespace GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
@@ -35,15 +36,12 @@ public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, E
         var users = await _userRepository.FindManyByIds(uniqueUserIds)
             .ToListAsync(cancellationToken);
 
-        var chatRoom = new ChatRoom(request.OwnerId, request.Title)
-        {
-            Users = users
-        };
+        var chatRoom = new ChatRoom(request.OwnerId, request.Title) { Users = users };
 
         await _chatRoomRepository.InsertAsync(chatRoom, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var inviteToChatRoomEvent = new InviteToChatRoomEvent(chatRoom);
+        var inviteToChatRoomEvent = new OpenToChatRoomEvent(chatRoom);
         await _sender.Send(inviteToChatRoomEvent, cancellationToken);
 
         return chatRoom;

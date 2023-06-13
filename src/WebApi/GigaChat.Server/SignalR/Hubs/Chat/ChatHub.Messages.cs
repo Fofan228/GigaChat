@@ -1,4 +1,4 @@
-namespace GigaChat.Servexxr.SignalR.Hubs.Chat;
+namespace GigaChat.Server.SignalR.Hubs.Chat;
 
 public partial class ChatHub
 {

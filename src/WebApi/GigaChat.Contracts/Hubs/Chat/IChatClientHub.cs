@@ -7,6 +7,10 @@ public interface IChatClientHub
 {
     Task SendError(string error);
     Task SendUserChatRooms(IEnumerable<ChatRoomOutputModel> chatRoomModels);
-    Task SendInviteToChatRoom(ChatRoomOutputModel chatRoomModel);
+    Task SendOpenChatRoom(ChatRoomOutputModel chatRoomModel);
     Task SendCloseChatRoom(CloseChatRoomOutputModel outputModel);
+    Task SendJoinToChatRoom(JoinToChatRoomOutputModel outputModel);
+    Task SendExitFromChatRoom(ExitFromChatRoomOutputModel outputModel);
+    Task SendInviteToChatRoom(InviteToChatRoomOutputModel outputModel);
+    Task SendKickFromChatRoom(KickFromChatRoomOutputModel outputModel);
 }

@@ -9,26 +9,26 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace GigaChat.Server.SignalR.EventHandlers.Chat;
 
-public class InviteToChatRoomEventHandler : IRequestHandler<InviteToChatRoomEvent>
+public class KickFromChatRoomEventHandler : IRequestHandler<KickFromChatRoomEvent>
 {
     private readonly IHubContext<ChatHub, IChatClientHub> _hubContext;
 
-    public InviteToChatRoomEventHandler(IHubContext<ChatHub, IChatClientHub> hubContext)
+    public KickFromChatRoomEventHandler(IHubContext<ChatHub, IChatClientHub> hubContext)
     {
         _hubContext = hubContext;
     }
 
-    public async Task Handle(InviteToChatRoomEvent request, CancellationToken cancellationToken)
+    public async Task Handle(KickFromChatRoomEvent request, CancellationToken cancellationToken)
     {
         var chatRoom = request.ChatRoom;
         var userId = request.UserId;
-        var outputModel = new InviteToChatRoomOutputModel(chatRoom.Id, request.UserId, chatRoom.OwnerId);
+        var outputModel = new KickFromChatRoomOutputModel(chatRoom.Id, userId, chatRoom.OwnerId);
 
         if (ChatHub.ConnectionIds.TryGetValue(userId, out var connectionId))
-            await _hubContext.Groups.AddToGroupAsync(connectionId, chatRoom.Id.ToString(), cancellationToken);
+            await _hubContext.Groups.RemoveFromGroupAsync(connectionId, chatRoom.Id.ToString(), cancellationToken);
 
         await _hubContext.Clients
             .Users(userId.ToString())
-            .SendInviteToChatRoom(outputModel);
+            .SendKickFromChatRoom(outputModel);
     }
 }
