@@ -16,7 +16,7 @@ public class SendTextMessageCommandHandler : IRequestHandler<SendTextMessageComm
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ISender _sender;
-    
+
     public SendTextMessageCommandHandler(
         IChatMessageRepository chatMessageRepository,
         IChatRoomRepository chatRoomRepository,
@@ -37,19 +37,16 @@ public class SendTextMessageCommandHandler : IRequestHandler<SendTextMessageComm
     {
         var user = await _userRepository.FindOneByIdAsync(request.UserId, cancellationToken);
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
-        
-        if (user is null)
-            throw new NotImplementedException();
-        if (chatRoom is null)
-            throw new NotImplementedException();
-        if (!chatRoom.Users.Any(u => u.Id == user.Id))
-            throw new NotImplementedException();
+
+        if (user is null) throw new NotImplementedException();
+        if (chatRoom is null) throw new NotImplementedException();
+        if (!chatRoom.Users.Any(u => u.Id == user.Id)) throw new NotImplementedException();
 
         var chatMessage = new ChatMessage(request.Text, request.ChatRoomId, request.UserId);
 
         await _chatMessageRepository.InsertAsync(chatMessage, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         var sendTextMessageEvent = new SendTextMessageEvent(chatMessage, user);
         await _sender.Send(sendTextMessageEvent, cancellationToken);
 

@@ -20,13 +20,14 @@ public class SendTextMessageEventHandler : IRequestHandler<SendTextMessageEvent>
 
     public async Task Handle(SendTextMessageEvent request, CancellationToken cancellationToken)
     {
-        var user = request.User;
-        var chatMessage = request.ChatMessage;
-        var outputModel = new SendTextMessageOutputModel(chatMessage.Text, chatMessage.ChatRoomId,
-            chatMessage.UserId, user.Name);
+        var outputModel = new SendTextMessageOutputModel(
+            Text: request.ChatMessage.Text,
+            ChatRoomId: request.ChatMessage.ChatRoomId,
+            UserId: request.ChatMessage.UserId,
+            UserName: request.User.Name);
 
         await _hubContext.Clients
-            .Group(chatMessage.ChatRoomId.ToString())
+            .Group(request.ChatMessage.ChatRoomId.ToString())
             .SendTextMessage(outputModel);
     }
 }

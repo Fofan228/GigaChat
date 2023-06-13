@@ -1,5 +1,6 @@
 using GigaChat.Contracts.Http.ChatMessages.Requests;
 using GigaChat.Contracts.Http.ChatMessages.Responses;
+using GigaChat.Contracts.Hubs.ChatRoom.Models.Input;
 using GigaChat.Core.ChatMessages.Commands.CreateChatMessage;
 using GigaChat.Core.ChatMessages.Queries.ListChatMessages;
 using GigaChat.Core.Common.Entities.ChatMessages;
@@ -12,8 +13,8 @@ public class ChatMessagesMapConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<ChatMessage, ChatMessageResponse>();
-        config.NewConfig<CreateChatMessageRequest, SendTextMessageCommand>();
-        config.NewConfig<ListChatMessagesRequest, ListChatMessagesQuery>();
+        config.NewConfig<(Guid userId, SendTextMessageInputModel model), SendTextMessageCommand>()
+            .Map(d => d.UserId, s => s.userId)
+            .Map(d => d, s => s.model);
     }
 }
