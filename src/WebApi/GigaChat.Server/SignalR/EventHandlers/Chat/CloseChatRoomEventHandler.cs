@@ -24,14 +24,14 @@ public class CloseChatRoomEventHandler : IRequestHandler<CloseChatRoomEvent>
         var outputModel = new CloseChatRoomOutputModel(chatRoom.Id);
         var userIds = chatRoom.Users.Select(x => x.Id).ToList();
 
+        await _hubContext.Clients
+            .Users(userIds.Select(x => x.ToString()))
+            .SendCloseChatRoom(outputModel);
+        
         foreach (var userId in userIds)
         {
             if (ChatHub.ConnectionIds.TryGetValue(userId, out var connectionId))
                 await _hubContext.Groups.RemoveFromGroupAsync(connectionId, chatRoom.Id.ToString(), cancellationToken);
         }
-
-        await _hubContext.Clients
-            .Users(userIds.Select(x => x.ToString()))
-            .SendCloseChatRoom(outputModel);
     }
 }

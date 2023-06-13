@@ -31,8 +31,11 @@ public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, E
 
     public async Task<ErrorOr<ChatRoom>> Handle(OpenChatRoomCommand request, CancellationToken cancellationToken)
     {
+        if (!await _userRepository.ExistsWithIdAsync(request.OwnerId, cancellationToken))
+            throw new NotImplementedException();
+        
         var uniqueUserIds = request.UserIds.Distinct().ToList();
-
+        
         var users = await _userRepository.FindManyByIds(uniqueUserIds)
             .ToListAsync(cancellationToken);
 

@@ -1,8 +1,8 @@
-﻿using GigaChat.Contracts.Http.ChatRooms.Requests;
+﻿using GigaChat.Contracts.Common.Routes;
+using GigaChat.Contracts.Http.ChatRooms.Requests;
 using GigaChat.Contracts.Http.ChatRooms.Responses;
-using GigaChat.Contracts.Common.Routes;
-using GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
 using GigaChat.Core.ChatRooms.Commands.CloseChatRoom;
+using GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
 using GigaChat.Core.ChatRooms.Commands.UpdateChatRoomTitle;
 using GigaChat.Core.ChatRooms.Queries.ListChatRooms;
 using GigaChat.Server.Controllers.Common;
@@ -41,10 +41,9 @@ public class ChatRoomController : ApiController
 
     [HttpPost]
     public async Task<ActionResult> CreateChatRoom(
-        CreateChatRoomRequest request,
+        OpenChatRoomCommand command,
         CancellationToken cancellationToken)
     {
-        var command = _mapper.Map<OpenChatRoomCommand>(request);
         var result = await _sender.Send(command, cancellationToken);
         return result.IsError ? Problem(result.Errors) : Created(string.Empty, null);
     }
