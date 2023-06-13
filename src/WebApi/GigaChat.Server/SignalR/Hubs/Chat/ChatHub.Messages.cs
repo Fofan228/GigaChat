@@ -1,5 +1,5 @@
 using GigaChat.Contracts.Hubs.ChatRoom.Models.Input;
-using GigaChat.Core.ChatMessages.Commands.CreateChatMessage;
+using GigaChat.Core.ChatMessages.Commands.SendTextMessage;
 
 namespace GigaChat.Server.SignalR.Hubs.Chat;
 

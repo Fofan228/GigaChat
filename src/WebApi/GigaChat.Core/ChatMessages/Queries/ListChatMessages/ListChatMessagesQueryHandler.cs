@@ -8,20 +8,32 @@ using MediatR;
 
 namespace GigaChat.Core.ChatMessages.Queries.ListChatMessages;
 
-public class ListChatMessagesQueryHandler : IRequestHandler<ListChatMessagesQuery, ErrorOr<IEnumerable<ChatMessage>>>
+public class ListChatMessagesQueryHandler : IRequestHandler<ListChatMessagesByChatRoomIdQuery, ErrorOr<ListChatMessagesByChatRoomIdQueryResult>>
 {
     private readonly IChatMessageRepository _chatMessageRepository;
+    private readonly IUserRepository _userRepository;
 
-    public ListChatMessagesQueryHandler(IChatMessageRepository chatMessageRepository)
+    public ListChatMessagesQueryHandler(
+        IChatMessageRepository chatMessageRepository,
+        IUserRepository userRepository)
     {
         _chatMessageRepository = chatMessageRepository;
+        _userRepository = userRepository;
     }
 
-    public async Task<ErrorOr<IEnumerable<ChatMessage>>> Handle(
-        ListChatMessagesQuery request,
+    public async Task<ErrorOr<ListChatMessagesByChatRoomIdQueryResult>> Handle(
+        ListChatMessagesByChatRoomIdQuery request,
         CancellationToken cancellationToken)
     {
         var spec = new ChatMessagesByChatRoomIdSpec(request.ChatRoomId);
-        return await _chatMessageRepository.FindMany(spec).ToListAsync(cancellationToken);
+        var chatMessages = await _chatMessageRepository.FindMany(spec).ToListAsync(cancellationToken);
+
+        var userIds = chatMessages.Select(c => c.UserId).ToList();
+        var users = await _userRepository.FindManyByIds(userIds)
+            .ToListAsync(cancellationToken);
+        
+        var logins = users.Select(u => u.Login).ToList();
+
+        return new ListChatMessagesByChatRoomIdQueryResult(chatMessages, logins);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using GigaChat.Contracts.Http.ChatMessages.Requests;
 using GigaChat.Contracts.Http.ChatMessages.Responses;
 using GigaChat.Contracts.Common.Routes;
-using GigaChat.Core.ChatMessages.Commands.CreateChatMessage;
+using GigaChat.Core.ChatMessages.Commands.SendTextMessage;
 using GigaChat.Core.ChatMessages.Queries.ListChatMessages;
 using GigaChat.Server.Controllers.Common;
 
@@ -30,7 +30,7 @@ public class ChatMessageController : ApiController
         [FromQuery] ListChatMessagesByChatRoomIdRequest request,
         CancellationToken cancellationToken)
     {
-        var query = _mapper.Map<ListChatMessagesQuery>(request);
+        var query = _mapper.Map<ListChatMessagesByChatRoomIdQuery>(request);
         var result = await _sender.Send(query, cancellationToken);
         if (result.IsError) return Problem(result.Errors);
         var response = _mapper.Map<ListChatMessagesByChatRoomIdResponse>(result.Value);

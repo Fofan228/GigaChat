@@ -6,4 +6,5 @@ using MediatR;
 
 namespace GigaChat.Core.ChatMessages.Queries.ListChatMessages;
 
-public record ListChatMessagesQuery(long ChatRoomId) : IRequest<ErrorOr<IEnumerable<ChatMessage>>>;
+public record ListChatMessagesByChatRoomIdQuery(long ChatRoomId) :
+    IRequest<ErrorOr<ListChatMessagesByChatRoomIdQueryResult>>;

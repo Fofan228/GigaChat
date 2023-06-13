@@ -1,7 +1,7 @@
 using GigaChat.Contracts.Http.ChatMessages.Requests;
 using GigaChat.Contracts.Http.ChatMessages.Responses;
 using GigaChat.Contracts.Hubs.ChatRoom.Models.Input;
-using GigaChat.Core.ChatMessages.Commands.CreateChatMessage;
+using GigaChat.Core.ChatMessages.Commands.SendTextMessage;
 using GigaChat.Core.ChatMessages.Queries.ListChatMessages;
 using GigaChat.Core.Common.Entities.ChatMessages;
 
