@@ -7,7 +7,7 @@ using GigaChat.Core.Common.Entities.ChatMessages;
 
 using MediatR;
 
-namespace GigaChat.Core.ChatMessages.Commands.CreateChatMessage;
+namespace GigaChat.Core.ChatMessages.Commands.SendTextMessage;
 
 public class SendTextMessageCommandHandler : IRequestHandler<SendTextMessageCommand, ErrorOr<ChatMessage>>
 {
