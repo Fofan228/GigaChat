@@ -1,43 +1,30 @@
-import React from 'react';
+import { Grid, List, ListItem, ListItemIcon, ListItemText, Avatar } from '@mui/material';
+import usernameToAvatar from '../../../utils/usernameToAvatar';
+import { ChatContext } from '../../../contexts/_index';
+import React, { useContext } from 'react';
 
 const Users = () => {
+
+    const chatCtx = useContext(ChatContext);
+
     return (
-        <div>
-            
-        </div>
-    );
-};
+        <Grid item md={3} sx={{
+            overflowY: 'auto',
+            display: { xs: "none", sm: "block" }
+        }}>
+            <List>
 
-export default Users;
+                {chatCtx?.connectedUsers.map((user, index) => (
+                    <ListItem key={`user_${index}`}>
+                        <ListItemIcon>
+                            <Avatar {...usernameToAvatar(user.name)} />
+                        </ListItemIcon>
+                        <ListItemText primary={user.name}>{user.name}</ListItemText>
+                    </ListItem>
+                ))}
+            </List>
+        </Grid>
+    )
+}
 
-// import { Grid, List, ListItem, ListItemIcon, ListItemText, Avatar } from '@mui/material';
-// import usernameToAvatar from '../../../utils/usernameToAvatar';
-// import { ChatContext } from '../../../contexts/_index';
-// import { useContext } from 'react';
-//
-// const Users = () => {
-//
-//     const hubCtx = useContext(ChatContext);
-//
-//     return (
-//         <Grid item md={3} sx={{
-//             overflowY: 'auto',
-//             display: { xs: "none", sm: "block" }
-//         }}>
-//             <List>
-//
-//                 {hubCtx?.connectedUsers.map((item, index) => (
-//                     <ListItem key={`user_${index}`}>
-//                         <ListItemIcon>
-//                             <Avatar {...usernameToAvatar(item)} />
-//                         </ListItemIcon>
-//                         <ListItemText primary={item}>{item}</ListItemText>
-//                     </ListItem>
-//                 ))}
-//
-//             </List>
-//         </Grid>
-//     )
-// }
-//
-// export default Users
+export default Users

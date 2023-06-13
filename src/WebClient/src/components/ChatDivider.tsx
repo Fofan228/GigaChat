@@ -1,3 +1,4 @@
+import React from "react"
 import { Divider } from '@mui/material';
 
 const ChatDivider = (props: { width: string }) => {

@@ -3,4 +3,6 @@ export interface Message {
     text: string
     chatRoomId: string
     userId: string
+    //хочу
+    name: string
 }
