@@ -1,3 +1,3 @@
-﻿namespace GigaChat.Contracts.Hubs.Chat.Models.Input;
+﻿namespace GigaChat.Contracts.Hubs.ChatRoom.Models.Input;
 
 public record InviteToChatRoomInputModel(Guid UserId, long ChatRoomId);

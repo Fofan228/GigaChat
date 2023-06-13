@@ -1,4 +1,4 @@
-using GigaChat.Contracts.Hubs.Chat.Models.Input;
+using GigaChat.Contracts.Hubs.ChatRoom.Models.Input;
 using GigaChat.Core.ChatRooms.Commands.CloseChatRoom;
 using GigaChat.Core.ChatRooms.Commands.ExitFromChatRoom;
 using GigaChat.Core.ChatRooms.Commands.InviteToChatRoom;

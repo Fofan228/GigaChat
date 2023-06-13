@@ -1,7 +1,6 @@
-using GigaChat.Contracts.Hubs.Chat.Models.Input;
-using GigaChat.Contracts.Hubs.Chat.Models.Output;
+using GigaChat.Contracts.Hubs.ChatRoom.Models.Output;
 
-namespace GigaChat.Contracts.Hubs.Chat;
+namespace GigaChat.Contracts.Hubs.ChatRoom;
 
 public interface IChatClientHub
 {
@@ -13,4 +12,5 @@ public interface IChatClientHub
     Task SendExitFromChatRoom(ExitFromChatRoomOutputModel outputModel);
     Task SendInviteToChatRoom(InviteToChatRoomOutputModel outputModel);
     Task SendKickFromChatRoom(KickFromChatRoomOutputModel outputModel);
+    Task SendTextMessage(SendTextMessageOutputModel messageOutputModel);
 }

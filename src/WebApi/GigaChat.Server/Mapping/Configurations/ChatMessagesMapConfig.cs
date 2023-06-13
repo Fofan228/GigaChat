@@ -13,7 +13,7 @@ public class ChatMessagesMapConfig : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<ChatMessage, ChatMessageResponse>();
-        config.NewConfig<CreateChatMessageRequest, CreateChatMessageCommand>();
+        config.NewConfig<CreateChatMessageRequest, SendTextMessageCommand>();
         config.NewConfig<ListChatMessagesRequest, ListChatMessagesQuery>();
     }
 }

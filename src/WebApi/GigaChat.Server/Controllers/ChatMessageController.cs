@@ -42,7 +42,7 @@ public class ChatMessageController : ApiController
         CreateChatMessageRequest request,
         CancellationToken cancellationToken)
     {
-        var command = _mapper.Map<CreateChatMessageCommand>(request);
+        var command = _mapper.Map<SendTextMessageCommand>(request);
         var result = await _sender.Send(command, cancellationToken);
         return result.IsError ? Problem(result.Errors) : Created(string.Empty, null);
     }

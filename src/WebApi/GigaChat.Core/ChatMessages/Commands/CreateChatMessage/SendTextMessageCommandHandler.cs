@@ -8,14 +8,14 @@ using MediatR;
 
 namespace GigaChat.Core.ChatMessages.Commands.CreateChatMessage;
 
-public class CreateChatMessageCommandHandler : IRequestHandler<CreateChatMessageCommand, ErrorOr<Created>>
+public class SendTextMessageCommandHandler : IRequestHandler<SendTextMessageCommand, ErrorOr<ChatMessage>>
 {
     private readonly IChatMessageRepository _chatMessageRepository;
     private readonly IChatRoomRepository _chatRoomRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateChatMessageCommandHandler(
+    public SendTextMessageCommandHandler(
         IChatMessageRepository chatMessageRepository,
         IChatRoomRepository chatRoomRepository,
         IUserRepository userRepository,
@@ -27,13 +27,13 @@ public class CreateChatMessageCommandHandler : IRequestHandler<CreateChatMessage
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<Created>> Handle(
-        CreateChatMessageCommand request,
+    public async Task<ErrorOr<ChatMessage>> Handle(
+        SendTextMessageCommand request,
         CancellationToken cancellationToken)
     {
-        if (!await _chatRoomRepository.ExistsWithIdAsync(request.ChatRoomId))
+        if (!await _chatRoomRepository.ExistsWithIdAsync(request.ChatRoomId, cancellationToken))
             throw new NotImplementedException();
-        if (!await _userRepository.ExistsWithIdAsync(request.UserId))
+        if (!await _userRepository.ExistsWithIdAsync(request.UserId, cancellationToken))
             throw new NotImplementedException();
 
         var chatMessage = new ChatMessage(request.Text, request.ChatRoomId, request.UserId);
@@ -41,6 +41,6 @@ public class CreateChatMessageCommandHandler : IRequestHandler<CreateChatMessage
         await _chatMessageRepository.InsertAsync(chatMessage, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Created;
+        return chatMessage;
     }
 }

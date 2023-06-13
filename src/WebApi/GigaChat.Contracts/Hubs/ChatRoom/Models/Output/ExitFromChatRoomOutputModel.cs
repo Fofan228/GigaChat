@@ -1,3 +1,3 @@
-﻿namespace GigaChat.Contracts.Hubs.Chat.Models.Output;
+﻿namespace GigaChat.Contracts.Hubs.ChatRoom.Models.Output;
 
 public record ExitFromChatRoomOutputModel(long ChatRoomId, Guid UserId);
