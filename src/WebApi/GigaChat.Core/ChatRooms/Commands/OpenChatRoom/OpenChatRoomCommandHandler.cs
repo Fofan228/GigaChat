@@ -10,7 +10,7 @@ using GigaChat.Core.ChatRooms.Events;
 
 namespace GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
 
-public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, ErrorOr<ChatRoom>>
+public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, ErrorOr<OpenChatRoomCommandResult>>
 {
     private readonly ISender _sender;
     private readonly IChatRoomRepository _chatRoomRepository;
@@ -29,13 +29,13 @@ public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, E
         _sender = sender;
     }
 
-    public async Task<ErrorOr<ChatRoom>> Handle(OpenChatRoomCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<OpenChatRoomCommandResult>> Handle(OpenChatRoomCommand request, CancellationToken cancellationToken)
     {
         if (!await _userRepository.ExistsWithIdAsync(request.OwnerId, cancellationToken))
             throw new NotImplementedException();
-        
+
         var uniqueUserIds = request.UserIds.Distinct().ToList();
-        
+
         var users = await _userRepository.FindManyByIds(uniqueUserIds)
             .ToListAsync(cancellationToken);
 
@@ -44,9 +44,9 @@ public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, E
         await _chatRoomRepository.InsertAsync(chatRoom, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var inviteToChatRoomEvent = new OpenToChatRoomEvent(chatRoom);
+        var inviteToChatRoomEvent = new OpenChatRoomEvent(chatRoom);
         await _sender.Send(inviteToChatRoomEvent, cancellationToken);
 
-        return chatRoom;
+        return new OpenChatRoomCommandResult(chatRoom);
     }
 }

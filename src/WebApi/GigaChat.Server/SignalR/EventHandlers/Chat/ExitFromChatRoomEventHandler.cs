@@ -24,15 +24,25 @@ public class ExitFromChatRoomEventHandler : IRequestHandler<ExitFromChatRoomEven
 
     public async Task Handle(ExitFromChatRoomEvent request, CancellationToken cancellationToken)
     {
-        var chatRoom = request.ChatRoom;
-        var userId = request.UserId;
-        var outputModel = new ExitFromChatRoomOutputModel(chatRoom.Id, userId);
+        var exitFromChatRoomOutputModel = new ExitFromChatRoomOutputModel(request.ChatRoom.Id);
+        var exitedUserFromChatRoomOutputModel = new ExitedUserFromChatRoomOutputModel(request.User.Id);
 
-        if (ChatHub.ConnectionIds.TryGetValue(userId, out var connectionId))
-            await _hubContext.Groups.RemoveFromGroupAsync(connectionId, chatRoom.Id.ToString(), cancellationToken);
+        if (ChatHub.ConnectionIds.TryGetValue(request.User.Id, out var connectionId))
+        {
+            await _hubContext.Groups.RemoveFromGroupAsync(
+                connectionId,
+                request.ChatRoom.Id.ToString(),
+                cancellationToken);
+        }
 
+        //Уведомление участника о выходе из чата
         await _hubContext.Clients
-            .Users(userId.ToString())
-            .SendExitFromChatRoom(outputModel);
+            .User(request.User.Id.ToString())
+            .SendExitFromChatRoom(exitFromChatRoomOutputModel);
+
+        //Уведомление всех участников о выходе из чата
+        await _hubContext.Clients
+            .Users(request.ChatRoom.Users.Select(x => x.Id.ToString()))
+            .SendExitedUserFromChatRoom(exitedUserFromChatRoomOutputModel);
     }
 }

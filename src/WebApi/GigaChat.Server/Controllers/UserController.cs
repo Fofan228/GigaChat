@@ -1,8 +1,5 @@
 ﻿using GigaChat.Contracts.Common.Routes;
-using GigaChat.Contracts.Http.Users.Requests;
 using GigaChat.Contracts.Http.Users.Responses;
-using GigaChat.Core.Users.Commands.SoftDeleteUser;
-using GigaChat.Core.Users.Commands.UpdateUsername;
 using GigaChat.Core.Users.Queries.ListUsers;
 using GigaChat.Core.Users.Queries.ListUsersByChatRoomId;
 using GigaChat.Server.Controllers.Common;
@@ -28,40 +25,24 @@ public class UserController : ApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserResponse>>> ListUsers(CancellationToken cancellationToken)
+    public async Task<ActionResult<ListUsersResponse>> ListUsers(CancellationToken cancellationToken)
     {
         var query = new ListUsersQuery();
         var result = await _sender.Send(query, cancellationToken);
         if (result.IsError) return Problem(result.Errors);
-        var response = _mapper.Map<IEnumerable<UserResponse>>(result.Value);
+        var response = _mapper.Map<ListUsersResponse>(result.Value);
         return Ok(response);
     }
 
     [HttpGet("{chatRoomId:long}")]
-    public async Task<ActionResult<IEnumerable<UserResponse>>> ListUsersByChatRoomId(
+    public async Task<ActionResult<ListUsersByChatRoomIdResponse>> ListUsersByChatRoomId(
         [FromRoute] long chatRoomId,
         CancellationToken cancellationToken)
     {
         var query = new ListUsersByChatRoomIdQuery(chatRoomId);
         var result = await _sender.Send(query, cancellationToken);
         if (result.IsError) return Problem(result.Errors);
-        var response = _mapper.Map<IEnumerable<UserResponse>>(result.Value);
+        var response = _mapper.Map<ListUsersByChatRoomIdResponse>(result.Value);
         return Ok(response);
-    }
-
-    [HttpPatch]
-    public async Task<ActionResult> UpdateUsername(UpdateUsernameRequest request, CancellationToken cancellationToken)
-    {
-        var command = _mapper.Map<UpdateUsernameCommand>(request);
-        var result = await _sender.Send(command, cancellationToken);
-        return result.IsError ? Problem(result.Errors) : NoContent();
-    }
-
-    [HttpDelete]
-    public async Task<ActionResult> SoftDeleteUser(SoftDeleteUserRequest request, CancellationToken cancellationToken)
-    {
-        var command = _mapper.Map<SoftDeleteUserCommand>(request);
-        var result = await _sender.Send(command, cancellationToken);
-        return result.IsError ? Problem(result.Errors) : NoContent();
     }
 }

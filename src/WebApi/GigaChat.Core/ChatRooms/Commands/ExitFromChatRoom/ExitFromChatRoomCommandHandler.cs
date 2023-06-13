@@ -8,7 +8,7 @@ using MediatR;
 
 namespace GigaChat.Core.ChatRooms.Commands.ExitFromChatRoom;
 
-public class ExitFromChatRoomCommandHandler : IRequestHandler<ExitFromChatRoomCommand, ErrorOr<ExitFromChatRoomResult>>
+public class ExitFromChatRoomCommandHandler : IRequestHandler<ExitFromChatRoomCommand, ErrorOr<Updated>>
 {
     private readonly ISender _sender;
     private readonly IUserRepository _userRepository;
@@ -27,13 +27,13 @@ public class ExitFromChatRoomCommandHandler : IRequestHandler<ExitFromChatRoomCo
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<ExitFromChatRoomResult>> Handle(ExitFromChatRoomCommand request,
+    public async Task<ErrorOr<Updated>> Handle(ExitFromChatRoomCommand request,
         CancellationToken cancellationToken)
     {
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
         if (chatRoom is null) throw new NotImplementedException();
 
-        var user = await _userRepository.FindOneByIdAsync(request.UserId, cancellationToken);
+        var user = chatRoom.Users.FirstOrDefault(u => u.Id == request.UserId);
         if (user is null) throw new NotImplementedException();
 
         chatRoom.Users.Remove(user);
@@ -41,9 +41,9 @@ public class ExitFromChatRoomCommandHandler : IRequestHandler<ExitFromChatRoomCo
         await _chatRoomRepository.UpdateAsync(chatRoom, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var exitFromChatRoomEvent = new ExitFromChatRoomEvent(chatRoom, user.Id);
+        var exitFromChatRoomEvent = new ExitFromChatRoomEvent(chatRoom, user);
         await _sender.Send(exitFromChatRoomEvent, cancellationToken);
 
-        return new ExitFromChatRoomResult(chatRoom.Id, user.Id);
+        return Result.Updated;
     }
 }

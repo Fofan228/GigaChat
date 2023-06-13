@@ -1,3 +1,5 @@
+using GigaChat.Contracts.Common.Dto;
+
 namespace GigaChat.Contracts.Http.ChatMessages.Responses;
 
-public record ChatMessageResponse(long Id, string Text, long ChatRoomId, Guid UserId);
+public record ListChatMessagesByChatRoomIdResponse(IEnumerable<ChatMessageOutputDto> Messages);

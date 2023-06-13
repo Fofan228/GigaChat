@@ -1,3 +1,5 @@
-﻿namespace GigaChat.Contracts.Hubs.ChatRoom.Models.Output;
+﻿using GigaChat.Contracts.Common.Models;
 
-public record InvitedUserToChatRoomOutputModel(string UserName, string Title);
+namespace GigaChat.Contracts.Hubs.ChatRoom.Models.Output;
+
+public record JoinedUserToChatRoomOutputModel(UserOutputDto User);

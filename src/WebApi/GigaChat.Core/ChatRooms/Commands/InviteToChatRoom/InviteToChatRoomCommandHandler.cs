@@ -8,7 +8,7 @@ using MediatR;
 
 namespace GigaChat.Core.ChatRooms.Commands.InviteToChatRoom;
 
-public class InviteToChatRoomCommandHandler : IRequestHandler<InviteToChatRoomCommand, ErrorOr<InviteToChatRoomResult>>
+public class InviteToChatRoomCommandHandler : IRequestHandler<InviteToChatRoomCommand, ErrorOr<Updated>>
 {
     private readonly ISender _sender;
     private readonly IUserRepository _userRepository;
@@ -27,7 +27,7 @@ public class InviteToChatRoomCommandHandler : IRequestHandler<InviteToChatRoomCo
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<InviteToChatRoomResult>> Handle(InviteToChatRoomCommand request,
+    public async Task<ErrorOr<Updated>> Handle(InviteToChatRoomCommand request,
         CancellationToken cancellationToken)
     {
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
@@ -47,6 +47,6 @@ public class InviteToChatRoomCommandHandler : IRequestHandler<InviteToChatRoomCo
         var inviteToChatRoomEvent = new InviteToChatRoomEvent(chatRoom, user);
         await _sender.Send(inviteToChatRoomEvent, cancellationToken);
 
-        return new InviteToChatRoomResult(chatRoom.Id, user.Id, chatRoom.OwnerId);
+        return Result.Updated;
     }
 }

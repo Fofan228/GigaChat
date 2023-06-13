@@ -6,4 +6,4 @@ using MediatR;
 
 namespace GigaChat.Core.Users.Queries.ListUsers;
 
-public record ListUsersQuery : IRequest<ErrorOr<IEnumerable<User>>>;
+public record ListUsersQuery : IRequest<ErrorOr<ListUsersQueryResult>>;

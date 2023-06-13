@@ -1,3 +1,4 @@
+using GigaChat.Contracts.Common.Dto;
 using GigaChat.Contracts.Common.Routes;
 using GigaChat.Contracts.Hubs.ChatRoom;
 using GigaChat.Contracts.Hubs.ChatRoom.Models.Output;
@@ -44,13 +45,13 @@ public partial class ChatHub : Hub<IChatClientHub>
 
         _connectionIds.Add(userId, Context.ConnectionId);
 
-        foreach (var chatRoom in result.Value)
+        foreach (var chatRoom in result.Value.ChatRooms)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, chatRoom.Id.ToString(), Context.ConnectionAborted);
         }
 
-        var chatRoomModels = _mapper.Map<IEnumerable<ChatRoomOutputModel>>(result.Value);
-        await Clients.Caller.SendUserChatRooms(chatRoomModels);
+        var outputModel = _mapper.Map<SendUserChatRoomsOutputModel>(result.Value);
+        await Clients.Caller.SendUserChatRooms(outputModel);
     }
 
     public override Task OnDisconnectedAsync(Exception? exception)

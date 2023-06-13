@@ -8,8 +8,7 @@ public partial class ChatHub
     public async Task SendTextMessage(SendTextMessageInputModel inputModel)
     {
         var request = _mapper.Map<SendTextMessageCommand>((GetUserId(), inputModel));
-        var result = await _sender.Send(request);
-        if (result.IsError) return;
+        await _sender.Send(request);
     }
 
     public Task EditTextMessage()

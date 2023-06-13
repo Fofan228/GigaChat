@@ -1,3 +1,4 @@
+using GigaChat.Contracts.Common.Dto;
 using GigaChat.Contracts.Hubs.ChatRoom.Models.Output;
 
 namespace GigaChat.Contracts.Hubs.ChatRoom;
@@ -5,13 +6,13 @@ namespace GigaChat.Contracts.Hubs.ChatRoom;
 public interface IChatClientHub
 {
     Task SendError(string error);
-    Task SendUserChatRooms(IEnumerable<ChatRoomOutputModel> chatRoomModels);
-    Task SendOpenChatRoom(ChatRoomOutputModel chatRoomModel);
+    Task SendUserChatRooms(SendUserChatRoomsOutputModel outputModel);
+    Task SendOpenChatRoom(SendOpenChatRoomOutputModel outputModel);
     Task SendCloseChatRoom(CloseChatRoomOutputModel outputModel);
-    Task SendJoinToChatRoom(JoinToChatRoomOutputModel outputModel);
     Task SendExitFromChatRoom(ExitFromChatRoomOutputModel outputModel);
-    Task SendInviteToChatRoom(InviteToChatRoomOutputModel outputModel);
+    Task SendExitedUserFromChatRoom(ExitedUserFromChatRoomOutputModel outputModel);
+    Task SendInviteToChatRoom(SendInviteToChatRoomOutputModel outputModel);
     Task SendKickFromChatRoom(KickFromChatRoomOutputModel outputModel);
-    Task SendTextMessage(SendTextMessageOutputModel messageOutputModel);
-    Task SendInvitedUserInChatRoom(InvitedUserToChatRoomOutputModel userOutputModel);
+    Task SendTextMessage(SendTextMessageOutputModel outputModel);
+    Task SendJoinedUserToChatRoom(JoinedUserToChatRoomOutputModel outputModel);
 }

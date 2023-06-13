@@ -8,7 +8,7 @@ using MediatR;
 
 namespace GigaChat.Core.ChatRooms.Queries.ListChatRooms;
 
-public class ListUserChatRoomsQueryHandler : IRequestHandler<ListUserChatRoomsQuery, ErrorOr<IEnumerable<ChatRoom>>>
+public class ListUserChatRoomsQueryHandler : IRequestHandler<ListUserChatRoomsQuery, ErrorOr<ListUserChatRoomsQueryResult>>
 {
     private readonly IChatRoomRepository _chatRoomRepository;
 
@@ -17,10 +17,10 @@ public class ListUserChatRoomsQueryHandler : IRequestHandler<ListUserChatRoomsQu
         _chatRoomRepository = chatRoomRepository;
     }
 
-    public async Task<ErrorOr<IEnumerable<ChatRoom>>> Handle(ListUserChatRoomsQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<ListUserChatRoomsQueryResult>> Handle(ListUserChatRoomsQuery request, CancellationToken cancellationToken)
     {
         var spec = new NotDeletedChatRoomsSpec() & new UserChatRoomsSpec(request.UserId);
-        return await _chatRoomRepository.FindMany(spec)
-            .ToListAsync(cancellationToken);
+        var chatRooms = await _chatRoomRepository.FindMany(spec).ToListAsync(cancellationToken);
+        return new ListUserChatRoomsQueryResult(chatRooms);
     }
 }

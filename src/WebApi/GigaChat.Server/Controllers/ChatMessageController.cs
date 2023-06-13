@@ -26,24 +26,14 @@ public class ChatMessageController : ApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ChatMessageResponse>>> ListChatMessages(
-        [FromQuery] ListChatMessagesRequest request,
+    public async Task<ActionResult<ListChatMessagesByChatRoomIdResponse>> ListChatMessagesByChatRoomId(
+        [FromQuery] ListChatMessagesByChatRoomIdRequest request,
         CancellationToken cancellationToken)
     {
         var query = _mapper.Map<ListChatMessagesQuery>(request);
         var result = await _sender.Send(query, cancellationToken);
         if (result.IsError) return Problem(result.Errors);
-        var response = _mapper.Map<IEnumerable<ChatMessageResponse>>(result.Value);
+        var response = _mapper.Map<ListChatMessagesByChatRoomIdResponse>(result.Value);
         return Ok(response);
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> CreateChatMessage(
-        CreateChatMessageRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = _mapper.Map<SendTextMessageCommand>(request);
-        var result = await _sender.Send(command, cancellationToken);
-        return result.IsError ? Problem(result.Errors) : Created(string.Empty, null);
     }
 }

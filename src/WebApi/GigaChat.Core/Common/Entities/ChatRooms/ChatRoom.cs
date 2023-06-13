@@ -21,6 +21,6 @@ public class ChatRoom : EntityBase<long>
 
     public string Title { get; set; }
     public Guid OwnerId { get; set; }
-    public ICollection<User> Users { get; set; }
+    public List<User> Users { get; set; }
     public bool IsDeleted { get; set; }
 }
