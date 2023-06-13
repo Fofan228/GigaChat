@@ -1,7 +1,7 @@
-import React, {createContext, useState} from "react";
+import React, {createContext, useContext, useState} from "react";
 import { Message, User } from "../models/_index";
 import {Outlet} from "react-router-dom";
-import {useNavigate} from "react-router-dom";
+import {ConnectContext, NotificationContext} from "./_index";
 
 interface IChatContext {
     messages: Message[]
@@ -14,6 +14,9 @@ interface IChatContext {
 export const ChatContext = createContext<IChatContext | null>(null)
 
 export const ChatContextProvider = () => {
+    const connect = useContext(ConnectContext)
+    const notification = useContext(NotificationContext)
+
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 0,
@@ -119,7 +122,12 @@ export const ChatContextProvider = () => {
     ]);
 
     function sendMessage(message: string) {
-        console.log("не реализовано", message)
+        connect?.connection?.invoke("SendTextMessage", message)
+            .catch(() => notification?.showMessage({
+                message: "Не удалось отправить сообщение",
+                duration: 3000,
+                status: "error"
+            }))
     }
 
     return (

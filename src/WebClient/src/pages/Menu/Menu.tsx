@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {
     Grid,
     IconButton,
@@ -14,11 +14,15 @@ import {StoreContext} from "../../contexts/_index";
 import Chats from "./components/Chats";
 import AddIcon from '@mui/icons-material/Add';
 import {useNavigate} from "react-router-dom";
+import ChooseUsersModal from "../../components/ChooseModal";
 
 
 const Menu = () => {
     const store = useContext(StoreContext)
     const nav = useNavigate()
+
+    const [usersModal, setUsersModal] = useState(false)
+
     return (
         <Grid container component={Paper} direction="row" sx={{
             p: 3, boxShadow: 2,
@@ -32,6 +36,7 @@ const Menu = () => {
                       justifyContent: 'space-between', mb: 2, paddingLeft: '0px !important'
                   }}
             >
+                <ChooseUsersModal open={usersModal} setOpen={setUsersModal} />
                 <IconButton color='error' onClick={() => {
                     logout()
                     store?.mobxStore.refreshUser()
@@ -60,7 +65,7 @@ const Menu = () => {
                     Управление чатами
                 </Typography>
                 <List>
-                  <ListItem sx={{cursor: "pointer"}} onClick={() => {}}>
+                  <ListItem sx={{cursor: "pointer"}} onClick={() => {setUsersModal(true)}}>
                       <ListItemIcon>
                           <AddIcon color={'info'} />
                       </ListItemIcon>

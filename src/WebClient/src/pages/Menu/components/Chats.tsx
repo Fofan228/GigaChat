@@ -4,9 +4,11 @@ import usernameToAvatar from "../../../utils/usernameToAvatar";
 import {StoreContext} from "../../../contexts/_index";
 import Groups2Icon from '@mui/icons-material/Groups2';
 import ChatDivider from "../../../components/ChatDivider";
+import {useNavigate} from "react-router-dom";
 
 const Chats = () => {
     const store = useContext(StoreContext)
+    const nav = useNavigate()
     return (
         <Grid item md={3} sx={{
             overflowY: 'auto',
@@ -32,9 +34,10 @@ const Chats = () => {
                 </Paper>
             }
             <List>
-
                 {store?.mobxStore.myChats.map((chat, index) => (
-                    <ListItem key={`user_${index}`}>
+                    <ListItem key={`user_${index}`} sx={{cursor: "pointer"}} onClick={() => {
+                        nav('/chat', {state:{chat: chat}})
+                    }}>
                         <ListItemIcon>
                             <Avatar {...usernameToAvatar(chat.title)} />
                         </ListItemIcon>

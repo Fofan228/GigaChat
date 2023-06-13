@@ -13,7 +13,8 @@ const MessageItem = (msg: Message) => {
     return (
         <Grid container direction="column" sx={{ alignItems: sent ? 'flex-end' : 'flex-start' }}>
             <Typography className={classes}>
-                <Typography color={sent ? '#cedcff' : '#3759d5'} variant='body2'>{msg.name}</Typography>
+                <Typography component={'span'} color={sent ? '#cedcff' : '#3759d5'}
+                            sx={{display: "block"}} variant='body2'>{msg.name}</Typography>
                 {msg.text}
             </Typography>
         </Grid>

@@ -3,3 +3,9 @@ export interface User {
     name: string
     nickname: string
 }
+
+export interface UserId {
+    id: string
+    name: string
+    nickname: string
+}
