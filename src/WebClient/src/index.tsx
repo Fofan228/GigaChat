@@ -6,7 +6,7 @@ import App from './App';
 import lightTheme from './themes/lightTheme';
 import './index.css'
 import {BrowserRouter} from 'react-router-dom'
-import {UserContextProvider, NotificationProvider, ConnectContextProvider} from "./contexts/_index";
+import {StoreContextProvider, NotificationProvider, ConnectContextProvider} from "./contexts/_index";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -16,13 +16,13 @@ root.render(
         <BrowserRouter>
             <ThemeProvider theme={lightTheme}>
                 <CssBaseline/>
-                <UserContextProvider>
+                <StoreContextProvider>
                     <ConnectContextProvider>
                         <NotificationProvider>
-                            <App/>
+                            <App />
                         </NotificationProvider>
                     </ConnectContextProvider>
-                </UserContextProvider>
+                </StoreContextProvider>
             </ThemeProvider>
         </BrowserRouter>
     </React.StrictMode>

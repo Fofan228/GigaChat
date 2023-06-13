@@ -53,5 +53,6 @@ export function logout() {
 
 export function getUser() {
     const user = localStorage.getItem(TOKEN_KEY)
+    console.log(parseJwt(user || "нету") )
     return user ? parseJwt(user) : null;
 }

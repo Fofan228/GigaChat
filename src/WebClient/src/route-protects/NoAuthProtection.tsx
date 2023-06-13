@@ -1,9 +1,9 @@
 import {Navigate, Outlet} from "react-router-dom";
-import {useContext} from "react";
-import {UserContext} from "../contexts/_index";
+import React, {useContext} from "react";
+import {StoreContext} from "../contexts/_index";
 
 const NoAuthProtect = () => {
-    const userContext = useContext(UserContext)
+    const userContext = useContext(StoreContext)
     if (userContext && userContext.user == null)
         return <Outlet />
     return <Navigate to={'/'} />

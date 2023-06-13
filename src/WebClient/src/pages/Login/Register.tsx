@@ -1,18 +1,19 @@
 import React, {useContext, useState} from 'react';
-import {UserContext} from "../../contexts/UserContext";
-import {ChatContext} from "../../contexts/ChatContext";
+import {StoreContext} from "../../contexts/StoreContext";
 import {Box, Button, TextField, Typography} from "@mui/material";
 import ChatDivider from "../../components/ChatDivider";
 import {NotificationContext} from "../../contexts/NotificationContext";
-import {login, registration} from "../../utils/authUtils";
+import {registration} from "../../utils/authUtils";
+import {useNavigate} from "react-router-dom";
 
 interface RegistrationProps {
     spinnerState: (success: boolean) => void
 }
 
 const Register = ({spinnerState}: RegistrationProps) => {
+    const nav = useNavigate()
 
-    const userCtx = useContext(UserContext);
+    const store = useContext(StoreContext);
     const noticeCtx = useContext(NotificationContext)
 
     const [userLogin, setUserLogin] = useState("");
@@ -24,12 +25,14 @@ const Register = ({spinnerState}: RegistrationProps) => {
         spinnerState(true)
         const user = await registration(userName, userLogin, password)
         if (user) {
-            userCtx?.setUser(user)
+            store?.mobxStore.refreshUser()
+            store?.mobxStore.refreshToken()
             noticeCtx?.showMessage({
                 status: "success",
                 duration: 3000,
                 message: `Вы успешно зарегистрировались, ${user.name}`
             })
+            nav('/')
         }
         else {
             noticeCtx?.showMessage({
