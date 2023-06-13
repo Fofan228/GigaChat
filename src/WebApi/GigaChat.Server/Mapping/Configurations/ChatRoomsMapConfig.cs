@@ -1,10 +1,6 @@
-using GigaChat.Contracts.Http.ChatRooms.Requests;
-using GigaChat.Contracts.Http.ChatRooms.Responses;
 using GigaChat.Contracts.Hubs.ChatRoom.Models.Input;
+using GigaChat.Core.ChatRooms.Commands.InviteToChatRoom;
 using GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
-using GigaChat.Core.ChatRooms.Commands.CloseChatRoom;
-using GigaChat.Core.ChatRooms.Commands.UpdateChatRoomTitle;
-using GigaChat.Core.Common.Entities.ChatRooms;
 
 using Mapster;
 
@@ -16,6 +12,10 @@ public class ChatRoomsMapConfig : IRegister
     {
         config.NewConfig<(Guid id, OpenChatRoomInputModel model), OpenChatRoomCommand>()
             .Map(d => d.OwnerId, s => s.id)
+            .Map(d => d, s => s.model);
+
+        config.NewConfig<(Guid ownerId, InviteToChatRoomInputModel model), InviteToChatRoomCommand>()
+            .Map(d => d.OwnerId, s => s.ownerId)
             .Map(d => d, s => s.model);
     }
 }

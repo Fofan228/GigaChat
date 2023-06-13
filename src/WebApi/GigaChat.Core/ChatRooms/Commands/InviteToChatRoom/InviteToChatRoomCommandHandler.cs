@@ -1,7 +1,6 @@
 ﻿using ErrorOr;
 
 using GigaChat.Core.ChatRooms.Events;
-using GigaChat.Core.Common.Entities.ChatRooms;
 using GigaChat.Core.Common.Repositories.Common.Interfaces;
 using GigaChat.Core.Common.Repositories.Interfaces;
 
@@ -45,7 +44,7 @@ public class InviteToChatRoomCommandHandler : IRequestHandler<InviteToChatRoomCo
         await _chatRoomRepository.UpdateAsync(chatRoom, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var inviteToChatRoomEvent = new InviteToChatRoomEvent(chatRoom, user.Id);
+        var inviteToChatRoomEvent = new InviteToChatRoomEvent(chatRoom, user);
         await _sender.Send(inviteToChatRoomEvent, cancellationToken);
 
         return new InviteToChatRoomResult(chatRoom.Id, user.Id, chatRoom.OwnerId);
