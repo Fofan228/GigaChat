@@ -2,8 +2,9 @@ import React, {createContext, useEffect, useContext} from "react";
 import { Room } from "../models/_index";
 import {ConnectContext, NotificationContext, StoreContext} from "../contexts/_index";
 import {Outlet} from "react-router-dom";
+import {observer} from "mobx-react-lite";
 
-export const RoomsLayer = () => {
+export const RoomsLayer = observer(() => {
     const connectionCtx = useContext(ConnectContext)
     const notificationCtx = useContext(NotificationContext)
 
@@ -21,17 +22,17 @@ export const RoomsLayer = () => {
                 })
             })
 
-            connect.on('SendUserChatRooms', (rooms: Room[]) => {
-                store?.mobxStore.setChats(rooms)
+            connect.on('SendUserChatRooms', (rooms: {rooms: Room[]}) => {
+                store?.mobxStore.setChats(rooms.rooms)
             })
 
-            connect.on('SendInviteToChatRoom', (newRoom: Room) => {
+            connect.on('SendInviteToChatRoom', (chatRoom: {chatRoom: Room}) => {
                 notificationCtx?.showMessage({
-                    message: `Вас добавили в чат '${newRoom.title}'`,
+                    message: `Вас добавили в чат '${chatRoom.chatRoom.title}'`,
                     duration: 4000,
                     status: "info"
                 })
-                store?.mobxStore.setChats([newRoom, ...store?.mobxStore.myChats])
+                store?.mobxStore.setChats([chatRoom.chatRoom, ...store?.mobxStore.myChats])
             })
 
             connect.on('SendCloseChatRoom', (kickRoom: Room) => {
@@ -47,4 +48,4 @@ export const RoomsLayer = () => {
     return (
         <Outlet />
     );
-}
+})

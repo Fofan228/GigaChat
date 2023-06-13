@@ -16,13 +16,13 @@ root.render(
         <BrowserRouter>
             <ThemeProvider theme={lightTheme}>
                 <CssBaseline/>
-                <StoreContextProvider>
-                    <ConnectContextProvider>
-                        <NotificationProvider>
-                            <App />
-                        </NotificationProvider>
-                    </ConnectContextProvider>
-                </StoreContextProvider>
+                <NotificationProvider>
+                    <StoreContextProvider>
+                        <ConnectContextProvider>
+                            <App/>
+                        </ConnectContextProvider>
+                    </StoreContextProvider>
+                </NotificationProvider>
             </ThemeProvider>
         </BrowserRouter>
     </React.StrictMode>

@@ -10,7 +10,17 @@ function parseJwt (token: string) {
             const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
             }).join(''));
-            return JSON.parse(jsonPayload) as User;
+            const user = JSON.parse(jsonPayload) as User;
+            //Перемещаю и удаляю поле sub
+            // @ts-ignore
+            user.id = user.sub
+            // @ts-ignore
+            delete user.sub
+            // @ts-ignore
+            user.login = user.nickname
+            // @ts-ignore
+            delete user.nickname
+            return user
         }
     }
 }
@@ -18,7 +28,7 @@ function parseJwt (token: string) {
 const TOKEN_KEY = 'token'
 
 export function getToken() {
-    return localStorage.getItem(TOKEN_KEY) || ""
+    return sessionStorage.getItem(TOKEN_KEY) || ""
 }
 
 export async function registration(name: string, login: string, password: string) {
@@ -28,7 +38,7 @@ export async function registration(name: string, login: string, password: string
         password
     })
         .then(r => {
-            localStorage.setItem(TOKEN_KEY, r.data.token)
+            sessionStorage.setItem(TOKEN_KEY, r.data.token)
             return  parseJwt(r.data.token)
         })
         .catch(e => {
@@ -42,7 +52,7 @@ export async function login(login: string, password: string) {
         password
     })
         .then(r => {
-            localStorage.setItem(TOKEN_KEY, r.data.token)
+            sessionStorage.setItem(TOKEN_KEY, r.data.token)
             return  parseJwt(r.data.token)
         })
         .catch(e => {
@@ -51,11 +61,11 @@ export async function login(login: string, password: string) {
 }
 
 export function logout() {
-    localStorage.removeItem(TOKEN_KEY)
+    sessionStorage.removeItem(TOKEN_KEY)
 }
 
 export function getUser() {
-    const user = localStorage.getItem(TOKEN_KEY)
+    const user = sessionStorage.getItem(TOKEN_KEY)
     console.log(parseJwt(user || "нету") )
     return user ? parseJwt(user) : null;
 }

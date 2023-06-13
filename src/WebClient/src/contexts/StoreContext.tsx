@@ -1,5 +1,6 @@
 import React, {createContext, ReactNode} from "react";
 import MobxState from "./MobxState";
+import {observer} from "mobx-react-lite";
 
 interface IStoreContext {
     mobxStore: MobxState

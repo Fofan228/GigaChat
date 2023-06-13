@@ -4,12 +4,13 @@ import ChatDivider from '../../components/ChatDivider';
 import {NotificationContext, StoreContext} from '../../contexts/_index';
 import {login} from "../../utils/authUtils";
 import {useNavigate} from "react-router-dom";
+import {observer} from "mobx-react-lite";
 
 interface LoginProps {
     spinnerState: (success: boolean) => void
 }
 
-const Login = ({spinnerState}: LoginProps) => {
+const Login = observer(({spinnerState}: LoginProps) => {
     const nav = useNavigate()
 
     const store = useContext(StoreContext);
@@ -72,6 +73,6 @@ const Login = ({spinnerState}: LoginProps) => {
             </Box>
         </>
     )
-}
+})
 
 export default Login

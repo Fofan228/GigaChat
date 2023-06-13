@@ -11,18 +11,22 @@ import {
     Modal, Typography
 } from "@mui/material";
 import usernameToAvatar from "../utils/usernameToAvatar";
-import {User, UserId} from "../models/User";
+import {User} from "../models/User";
 import axios from "axios";
 import constants from "../constants";
-import {ConnectContext, NotificationContext, StoreContext} from "../contexts/_index";
+import {StoreContext} from "../contexts/_index";
 import SendIcon from "@mui/icons-material/Send";
+import {observer} from "mobx-react-lite";
 
 interface IChooseUsersModal {
+    title: boolean
     open: boolean,
     setOpen: (open: boolean) => void
+    filterByUserId: string[]
+    submit: (title: string, userIds: string[]) => void
 }
 
-const ChooseModal = ({open, setOpen}: IChooseUsersModal) => {
+const ChooseUsersModal = observer(({open, setOpen, filterByUserId, submit}: IChooseUsersModal) => {
 
     const style = {
         position: 'absolute' as 'absolute',
@@ -39,18 +43,19 @@ const ChooseModal = ({open, setOpen}: IChooseUsersModal) => {
 
     const [checked, setChecked] = React.useState([] as string[]);
     const [title, setTitle] = useState("")
-    const [allUsers, setAllUsers] = useState<null | UserId[]>(null)
+    const [allUsers, setAllUsers] = useState<null | User[]>(null)
     const store = useContext(StoreContext)
-    const connect = useContext(ConnectContext)
-    const notification = useContext(NotificationContext)
 
     useEffect(() => {
         async function fetchUsers() {
-            setAllUsers(await axios.get<UserId[]>(constants.API_URL + "/users", {
+            setAllUsers(await axios.get<{users: User[]}>(constants.API_URL + "/users", {
                 headers: {
                     Authorization: `Bearer ${store?.mobxStore.token}`
                 }
-            }).then(r => r.data).catch(() => [] as UserId[]))
+            }).then(r => {
+                console.log(r, 'users')
+                return r.data.users.filter(us => !filterByUserId.includes(us.id))
+            }).catch(() => [] as User[]))
         }
 
         fetchUsers().then()
@@ -70,10 +75,7 @@ const ChooseModal = ({open, setOpen}: IChooseUsersModal) => {
     };
 
     return (
-        <Modal
-            open={open}
-            onClose={() => setOpen(false)}
-        >
+        <Modal open={open} onClose={() => setOpen(false)}>
             <Box sx={{...style, width: 400}}>
                 {
                     allUsers == null ? (
@@ -111,38 +113,29 @@ const ChooseModal = ({open, setOpen}: IChooseUsersModal) => {
                                 })}
                             </List>
                             <Box sx={{display: 'flex', flexDirection: "column", gap: "6px"}}>
+                                {
+
+                                }
                                 <Input value={title} placeholder={'Название чата'}
                                        onChange={e => setTitle(e.target.value)}/>
 
                                 <Button variant="contained" endIcon={<SendIcon/>} onClick={() => {
-                                    connect?.connection?.invoke("OpenChatRoom", {
-                                        title,
-                                        userIds: checked
-                                    }).then(r => {
-                                        console.log(r, 'успешно')
-                                    }).catch(e => {
-                                        console.log(e)
-                                        notification?.showMessage({
-                                            status: "error",
-                                            duration: 2000,
-                                            message: "Не удалось создать чат"
-                                        })
-                                    })
-
-                                    setChecked([])
-                                    setTitle("")
-                                    setOpen(false)
+                                    if (title.length > 0 && checked.length > 0) {
+                                        submit(title, checked)
+                                        setChecked([])
+                                        setTitle("")
+                                        setOpen(false)
+                                    }
                                 }}>
-                                    Создать
+                                    {title ? "Создать" : "Добавить"}
                                 </Button>
                             </Box>
-
                         </>
                     )
                 }
             </Box>
         </Modal>
     );
-};
+})
 
-export default ChooseModal;
+export default ChooseUsersModal

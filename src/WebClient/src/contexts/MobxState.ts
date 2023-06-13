@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import {Room, User} from "../models/_index";
+import {Room} from "../models/_index";
 import {getToken, getUser} from "../utils/authUtils";
 
 export default class MobxState {
@@ -7,16 +7,7 @@ export default class MobxState {
         makeAutoObservable(this)
     }
 
-    myChats: Room[] = [
-        {
-            id: 1,
-            title: "Комната 1"
-        },
-        {
-            id: 2,
-            title: "Бизнес холл"
-        }
-    ]
+    myChats: Room[] = []
 
     setChats(chats: Room[]) {
         this.myChats = chats

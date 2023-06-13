@@ -3,6 +3,8 @@ export interface Message {
     text: string
     chatRoomId: string
     userId: string
-    //хочу
-    name: string
+}
+
+export interface NamedMessage extends Message {
+    userName: string
 }
