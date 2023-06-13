@@ -1,6 +1,6 @@
 using GigaChat.Contracts.Common.Routes;
-using GigaChat.Contracts.Hubs.Chat;
-using GigaChat.Contracts.Hubs.Chat.Models.Output;
+using GigaChat.Contracts.Hubs.ChatRoom;
+using GigaChat.Contracts.Hubs.ChatRoom.Models.Output;
 using GigaChat.Core.ChatRooms.Queries.ListChatRooms;
 
 using MapsterMapper;
