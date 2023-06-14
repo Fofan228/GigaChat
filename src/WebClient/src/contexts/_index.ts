@@ -1,5 +1,5 @@
 export { ChatContext, ChatContextProvider } from './ChatContext'
-export { UserContext, UserContextProvider } from './UserContext'
+export { StoreContext, StoreContextProvider } from './StoreContext'
 export {} from '../route-protects/AuthProtection'
 export {NotificationContext, NotificationProvider} from './NotificationContext'
 export {ConnectContext, ConnectContextProvider} from './ConnectContext'

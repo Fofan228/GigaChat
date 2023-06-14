@@ -15,7 +15,8 @@ body::after {
     width: 620px;
     height: 620px;
 
-    background-image: url('./images/gigachad.png');
+    background-image: url(http://localhost:8080/images/gigachad.png);
+    z-index: -1;
 
     background-size: contain;
 }

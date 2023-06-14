@@ -4,3 +4,7 @@ export interface Message {
     chatRoomId: string
     userId: string
 }
+
+export interface NamedMessage extends Message {
+    userName: string
+}

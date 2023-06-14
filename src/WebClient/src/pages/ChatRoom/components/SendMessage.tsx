@@ -6,14 +6,13 @@ interface SendMessageProps {
     onSendMessage: (message: string) => void
 }
 
-const SendMessage = (props: SendMessageProps) => {
+const SendMessage = ({onSendMessage}: SendMessageProps) => {
 
     const [message, setMessage] = useState("")
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        props.onSendMessage(message);
+        onSendMessage(message);
         setMessage("")
     }
 
@@ -26,13 +25,13 @@ const SendMessage = (props: SendMessageProps) => {
             <Grid item xs={10}>
                 <TextField
                     multiline maxRows={4} required
-                    label="Message" fullWidth
+                    label="Сообщение" fullWidth
                     onChange={e => setMessage(e.target.value)}
                     value={message} />
             </Grid>
             <Grid item xs={2} sx={{ display: 'flex', justifyContent: "center", alignItems: 'center' }}>
                 <Button variant="contained" endIcon={<SendIcon />} type='submit'>
-                    Send
+                    Go
                 </Button>
             </Grid>
         </Grid>

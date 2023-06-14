@@ -8,7 +8,7 @@ using MediatR;
 
 namespace GigaChat.Core.Users.Queries.ListUsers;
 
-public class ListUsersQueryHandler : IRequestHandler<ListUsersQuery, ErrorOr<IEnumerable<User>>>
+public class ListUsersQueryHandler : IRequestHandler<ListUsersQuery, ErrorOr<ListUsersQueryResult>>
 {
     private readonly IUserRepository _userRepository;
 
@@ -17,12 +17,12 @@ public class ListUsersQueryHandler : IRequestHandler<ListUsersQuery, ErrorOr<IEn
         _userRepository = userRepository;
     }
 
-    public async Task<ErrorOr<IEnumerable<User>>> Handle(
+    public async Task<ErrorOr<ListUsersQueryResult>> Handle(
         ListUsersQuery request,
         CancellationToken cancellationToken)
     {
         var spec = new NotDeletedUsersSpec();
-        var users = _userRepository.FindMany(spec);
-        return await users.ToListAsync(cancellationToken);
+        var users = await _userRepository.FindMany(spec).ToListAsync(cancellationToken);
+        return new ListUsersQueryResult(users);
     }
 }

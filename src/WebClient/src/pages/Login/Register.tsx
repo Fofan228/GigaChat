@@ -1,18 +1,19 @@
 import React, {useContext, useState} from 'react';
-import {UserContext} from "../../contexts/UserContext";
-import {ChatContext} from "../../contexts/ChatContext";
+import {StoreContext} from "../../contexts/StoreContext";
 import {Box, Button, TextField, Typography} from "@mui/material";
 import ChatDivider from "../../components/ChatDivider";
 import {NotificationContext} from "../../contexts/NotificationContext";
-import {login, registration} from "../../utils/authUtils";
+import {registration} from "../../utils/authUtils";
+import {useNavigate} from "react-router-dom";
 
 interface RegistrationProps {
     spinnerState: (success: boolean) => void
 }
 
 const Register = ({spinnerState}: RegistrationProps) => {
+    const nav = useNavigate()
 
-    const userCtx = useContext(UserContext);
+    const store = useContext(StoreContext);
     const noticeCtx = useContext(NotificationContext)
 
     const [userLogin, setUserLogin] = useState("");
@@ -22,21 +23,22 @@ const Register = ({spinnerState}: RegistrationProps) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         spinnerState(true)
-        const user = await registration(userName, userLogin, password)
+        const user = await registration(userName, userLogin, password, (err) => {
+            noticeCtx?.showMessage({
+                message: err as string,
+                duration: 4000,
+                status: "error"
+            })
+        })
         if (user) {
-            userCtx?.setUser(user)
+            store?.mobxStore.refreshUser()
+            store?.mobxStore.refreshToken()
             noticeCtx?.showMessage({
                 status: "success",
                 duration: 3000,
                 message: `Вы успешно зарегистрировались, ${user.name}`
             })
-        }
-        else {
-            noticeCtx?.showMessage({
-                status: "info",
-                duration: 3000,
-                message: "Не получилось зарегистрироваться!"
-            })
+            nav('/')
         }
         spinnerState(false)
     }

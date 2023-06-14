@@ -12,12 +12,12 @@ public static class SwaggerGenConfig
     public static void Configure(SwaggerGenOptions options, IConfiguration configuration)
     {
         AddSwaggerDoc(options, configuration);
-        AddSecurityDefinition(options, configuration);
+        AddSecurityDefinition(options);
         options.SupportNonNullableReferenceTypes();
         options.AddSignalRSwaggerGen();
     }
 
-    private static void AddSecurityDefinition(SwaggerGenOptions options, IConfiguration config)
+    private static void AddSecurityDefinition(SwaggerGenOptions options)
     {
         options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
         {
@@ -60,7 +60,8 @@ public static class SwaggerGenConfig
             Contact = new OpenApiContact
             {
                 Name = swaggerGenOptions.Contact.Name,
-                Url = swaggerGenOptions.Contact.Url
+                Url = swaggerGenOptions.Contact.Url,
+                Email = swaggerGenOptions.Contact.Email
             }
         });
 

@@ -1,6 +1,9 @@
 using GigaChat.Contracts.Http.ChatMessages.Requests;
 using GigaChat.Contracts.Http.ChatMessages.Responses;
-using GigaChat.Core.ChatMessages.Commands.CreateChatMessage;
+using GigaChat.Contracts.Hubs.ChatRoom.Models.Input;
+using GigaChat.Core.ChatMessages.Commands.DeleteMessage;
+using GigaChat.Core.ChatMessages.Commands.EditTextMessage;
+using GigaChat.Core.ChatMessages.Commands.SendTextMessage;
 using GigaChat.Core.ChatMessages.Queries.ListChatMessages;
 using GigaChat.Core.Common.Entities.ChatMessages;
 
@@ -12,8 +15,16 @@ public class ChatMessagesMapConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<ChatMessage, ChatMessageResponse>();
-        config.NewConfig<CreateChatMessageRequest, CreateChatMessageCommand>();
-        config.NewConfig<ListChatMessagesRequest, ListChatMessagesQuery>();
+        config.NewConfig<(Guid userId, SendTextMessageInputModel model), SendTextMessageCommand>()
+            .Map(d => d.UserId, s => s.userId)
+            .Map(d => d, s => s.model);
+
+        config.NewConfig<(Guid userId, EditTextMessageInputModel model), EditTextMessageCommand>()
+            .Map(d => d.UserId, s => s.userId)
+            .Map(d => d, s => s.model);
+
+        config.NewConfig<(Guid userId, DeleteMessageInputModel model), DeleteMessageCommand>()
+            .Map(d => d.UserId, s => s.userId)
+            .Map(d => d, s => s.model);
     }
 }

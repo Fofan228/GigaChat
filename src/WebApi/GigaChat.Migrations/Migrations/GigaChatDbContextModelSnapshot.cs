@@ -41,7 +41,7 @@ namespace GigaChat.Migrations.Migrations
                     b.ToTable("chat_room_user", (string)null);
                 });
 
-            modelBuilder.Entity("GigaChat.Core.Entities.ChatMessages.ChatMessage", b =>
+            modelBuilder.Entity("GigaChat.Core.Common.Entities.ChatMessages.ChatMessage", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -83,7 +83,7 @@ namespace GigaChat.Migrations.Migrations
                     b.ToTable("chat_messages", (string)null);
                 });
 
-            modelBuilder.Entity("GigaChat.Core.Entities.ChatRooms.ChatRoom", b =>
+            modelBuilder.Entity("GigaChat.Core.Common.Entities.ChatRooms.ChatRoom", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,6 +100,10 @@ namespace GigaChat.Migrations.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("owner_id");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text")
@@ -112,10 +116,13 @@ namespace GigaChat.Migrations.Migrations
                     b.HasKey("Id")
                         .HasName("pk_chat_rooms");
 
+                    b.HasIndex("OwnerId")
+                        .HasDatabaseName("ix_chat_rooms_owner_id");
+
                     b.ToTable("chat_rooms", (string)null);
                 });
 
-            modelBuilder.Entity("GigaChat.Core.Entities.Users.User", b =>
+            modelBuilder.Entity("GigaChat.Core.Common.Entities.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -152,14 +159,14 @@ namespace GigaChat.Migrations.Migrations
 
             modelBuilder.Entity("ChatRoomUser", b =>
                 {
-                    b.HasOne("GigaChat.Core.Entities.ChatRooms.ChatRoom", null)
+                    b.HasOne("GigaChat.Core.Common.Entities.ChatRooms.ChatRoom", null)
                         .WithMany()
                         .HasForeignKey("ChatRoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_chat_room_user_chat_rooms_chat_room_id");
 
-                    b.HasOne("GigaChat.Core.Entities.Users.User", null)
+                    b.HasOne("GigaChat.Core.Common.Entities.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -167,16 +174,16 @@ namespace GigaChat.Migrations.Migrations
                         .HasConstraintName("fk_chat_room_user_users_users_id");
                 });
 
-            modelBuilder.Entity("GigaChat.Core.Entities.ChatMessages.ChatMessage", b =>
+            modelBuilder.Entity("GigaChat.Core.Common.Entities.ChatMessages.ChatMessage", b =>
                 {
-                    b.HasOne("GigaChat.Core.Entities.ChatRooms.ChatRoom", null)
+                    b.HasOne("GigaChat.Core.Common.Entities.ChatRooms.ChatRoom", null)
                         .WithMany()
                         .HasForeignKey("ChatRoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_chat_messages_chat_rooms_chat_room_id");
 
-                    b.HasOne("GigaChat.Core.Entities.Users.User", null)
+                    b.HasOne("GigaChat.Core.Common.Entities.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -184,9 +191,19 @@ namespace GigaChat.Migrations.Migrations
                         .HasConstraintName("fk_chat_messages_users_user_id");
                 });
 
-            modelBuilder.Entity("GigaChat.Core.Entities.Users.User", b =>
+            modelBuilder.Entity("GigaChat.Core.Common.Entities.ChatRooms.ChatRoom", b =>
                 {
-                    b.OwnsOne("GigaChat.Core.Entities.Users.HashedPassword", "Password", b1 =>
+                    b.HasOne("GigaChat.Core.Common.Entities.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_chat_rooms_users_user_id");
+                });
+
+            modelBuilder.Entity("GigaChat.Core.Common.Entities.Users.User", b =>
+                {
+                    b.OwnsOne("GigaChat.Core.Common.Entities.Users.HashedPassword", "Password", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid")

@@ -10,9 +10,10 @@ public static class DevCorsPolicy
     {
         corsOptions.AddPolicy(PolicyName, policy =>
         {
-            policy.AllowAnyOrigin()
+            policy.WithOrigins("http://localhost:8080")
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
     }
 }

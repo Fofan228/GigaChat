@@ -1,5 +1,4 @@
 ﻿using GigaChat.Core.Common.Entities.Base;
-using GigaChat.Core.Common.Entities.Users;
 
 namespace GigaChat.Core.Common.Entities.ChatMessages;
 

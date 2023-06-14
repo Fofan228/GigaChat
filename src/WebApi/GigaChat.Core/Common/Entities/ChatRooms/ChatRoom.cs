@@ -11,13 +11,16 @@ public class ChatRoom : EntityBase<long>
         Users = null!;
     }
 
-    public ChatRoom(string title)
+    public ChatRoom(Guid ownerId, string title)
     {
         Title = title;
         Users = new List<User>();
+        IsDeleted = false;
+        OwnerId = ownerId;
     }
 
-    public bool IsDeleted { get; set; }
     public string Title { get; set; }
-    public ICollection<User> Users { get; set; }
+    public Guid OwnerId { get; set; }
+    public List<User> Users { get; set; }
+    public bool IsDeleted { get; set; }
 }

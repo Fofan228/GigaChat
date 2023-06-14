@@ -29,7 +29,7 @@ var host = builder.Host;
 
 var services = builder.Services;
 {
-    services.AddCore(configuration);
+    services.AddCore(configuration, new[] { typeof(Program).Assembly });
     services.AddData(configuration);
     services.AddMapper();
     services.AddHealthChecking();

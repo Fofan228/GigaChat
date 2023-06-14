@@ -18,11 +18,11 @@ public class GigaChatDbContext : DbContext
         IConfiguration configuration,
         Assembly? migrationsAssembly = null)
     {
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString(ConnectionStringName),
-            builder =>
-            {
-                if (migrationsAssembly != null) builder.MigrationsAssembly(migrationsAssembly.GetName().ToString());
-            });
+        optionsBuilder.UseNpgsql(configuration.GetConnectionString(ConnectionStringName), builder =>
+        {
+            if (migrationsAssembly != null) builder.MigrationsAssembly(migrationsAssembly.GetName().ToString());
+        });
+        optionsBuilder.EnableSensitiveDataLogging(false);
         optionsBuilder.UseSnakeCaseNamingConvention();
     }
 

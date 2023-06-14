@@ -1,16 +1,19 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import React, { useState, useContext } from 'react';
 import ChatDivider from '../../components/ChatDivider';
-import {NotificationContext, UserContext} from '../../contexts/_index';
+import {NotificationContext, StoreContext} from '../../contexts/_index';
 import {login} from "../../utils/authUtils";
+import {useNavigate} from "react-router-dom";
+import {observer} from "mobx-react-lite";
 
 interface LoginProps {
     spinnerState: (success: boolean) => void
 }
 
-const Login = ({spinnerState}: LoginProps) => {
+const Login = observer(({spinnerState}: LoginProps) => {
+    const nav = useNavigate()
 
-    const userCtx = useContext(UserContext);
+    const store = useContext(StoreContext);
     const noticeCtx = useContext(NotificationContext)
 
     const [userLogin, setUserLogin] = useState("");
@@ -21,7 +24,9 @@ const Login = ({spinnerState}: LoginProps) => {
         spinnerState(true)
         const user = await login(userLogin, password)
         if (user) {
-            userCtx?.setUser(user)
+            store?.mobxStore.refreshUser()
+            store?.mobxStore.refreshToken()
+            nav('/')
             noticeCtx?.showMessage({
                 status: "success",
                 duration: 1200,
@@ -68,6 +73,6 @@ const Login = ({spinnerState}: LoginProps) => {
             </Box>
         </>
     )
-}
+})
 
 export default Login

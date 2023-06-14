@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react"
+import React, { createContext, ReactNode, useState } from "react"
 import {Alert, AlertColor, Snackbar} from "@mui/material";
 
 interface IMessage {
@@ -26,19 +26,17 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <>
-            <NotificationContext.Provider value={{showMessage}}>
-                <Snackbar open={openNotice}
-                          autoHideDuration={notice.duration}
-                          onClose={() => setOpenNotice(false)}
-                >
-                    <Alert severity={notice.status}>
-                        {notice.message}
-                    </Alert>
-                </Snackbar>
-                {children}
-            </NotificationContext.Provider>
-        </>
+        <NotificationContext.Provider value={{showMessage}}>
+            <Snackbar open={openNotice}
+                      autoHideDuration={notice.duration}
+                      onClose={() => setOpenNotice(false)}
+            >
+                <Alert severity={notice.status}>
+                    {notice.message}
+                </Alert>
+            </Snackbar>
+            {children}
+        </NotificationContext.Provider>
     )
 
 }

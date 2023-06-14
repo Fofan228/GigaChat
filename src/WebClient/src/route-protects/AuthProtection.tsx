@@ -1,10 +1,10 @@
 import {Navigate, Outlet} from "react-router-dom";
-import {useContext} from "react";
-import {UserContext} from "../contexts/_index";
+import React, {useContext} from "react";
+import {StoreContext} from "../contexts/_index";
 
 const AuthProtect = () => {
-    const userContext = useContext(UserContext)
-    if (userContext && userContext.user)
+    const store = useContext(StoreContext)
+    if (store && store.mobxStore.user)
         return <Outlet />
     return <Navigate to={'/auth'} />
 };
