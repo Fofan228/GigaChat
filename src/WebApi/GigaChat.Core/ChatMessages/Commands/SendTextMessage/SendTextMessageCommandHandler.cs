@@ -1,11 +1,10 @@
 using ErrorOr;
-
-using GigaChat.Core.ChatRooms.Events;
 using GigaChat.Core.Common.Repositories.Common.Interfaces;
 using GigaChat.Core.Common.Repositories.Interfaces;
 using GigaChat.Core.Common.Entities.ChatMessages;
 
 using MediatR;
+using GigaChat.Core.ChatMessages.Events;
 
 namespace GigaChat.Core.ChatMessages.Commands.SendTextMessage;
 

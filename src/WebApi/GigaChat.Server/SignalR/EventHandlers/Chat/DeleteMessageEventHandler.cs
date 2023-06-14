@@ -1,4 +1,4 @@
-﻿using GigaChat.Contracts.Common.Dto;
+using GigaChat.Contracts.Common.Dto;
 using GigaChat.Contracts.Hubs.ChatRoom;
 using GigaChat.Contracts.Hubs.ChatRoom.Models.Output;
 using GigaChat.Core.ChatMessages.Events;
@@ -12,12 +12,12 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace GigaChat.Server.SignalR.EventHandlers.Chat;
 
-public class SendTextMessageEventHandler : IRequestHandler<SendTextMessageEvent>
+public class DeleteMessageEventHandler : IRequestHandler<DeleteMessageEvent>
 {
     private readonly IHubContext<ChatHub, IChatClientHub> _hubContext;
     private readonly IMapper _mapper;
 
-    public SendTextMessageEventHandler(
+    public DeleteMessageEventHandler(
         IHubContext<ChatHub, IChatClientHub> hubContext,
         IMapper mapper)
     {
@@ -25,13 +25,13 @@ public class SendTextMessageEventHandler : IRequestHandler<SendTextMessageEvent>
         _mapper = mapper;
     }
 
-    public async Task Handle(SendTextMessageEvent request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteMessageEvent request, CancellationToken cancellationToken)
     {
         var chatMessageOutputDto = _mapper.Map<ChatMessageOutputDto>(request.ChatMessage);
-        var outputModel = new SendTextMessageOutputModel(chatMessageOutputDto, request.User.Name);
+        var outputModel = new DeleteMessageOutputModel(chatMessageOutputDto);
 
         await _hubContext.Clients
             .Group(request.ChatMessage.ChatRoomId.ToString())
-            .SendTextMessage(outputModel);
+            .SendDeleteMessage(outputModel);
     }
 }

@@ -1,4 +1,6 @@
 using GigaChat.Contracts.Hubs.ChatRoom.Models.Input;
+using GigaChat.Core.ChatMessages.Commands.DeleteMessage;
+using GigaChat.Core.ChatMessages.Commands.EditTextMessage;
 using GigaChat.Core.ChatMessages.Commands.SendTextMessage;
 
 namespace GigaChat.Server.SignalR.Hubs.Chat;
@@ -11,13 +13,15 @@ public partial class ChatHub
         await _sender.Send(request);
     }
 
-    public Task EditTextMessage()
+    public async Task EditTextMessage(EditTextMessageInputModel inputModel)
     {
-        return Task.CompletedTask;
+        var request = _mapper.Map<EditTextMessageCommand>((GetUserId(), inputModel));
+        await _sender.Send(request);
     }
 
-    public Task DeleteMessage()
+    public async Task DeleteMessage(DeleteMessageInputModel inputModel)
     {
-        return Task.CompletedTask;
+        var request = _mapper.Map<DeleteMessageCommand>((GetUserId(), inputModel));
+        await _sender.Send(request);
     }
 }

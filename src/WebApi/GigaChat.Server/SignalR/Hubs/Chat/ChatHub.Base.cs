@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+
 using GigaChat.Contracts.Common.Dto;
 using GigaChat.Contracts.Common.Routes;
 using GigaChat.Contracts.Hubs.ChatRoom;
@@ -19,8 +21,8 @@ namespace GigaChat.Server.SignalR.Hubs.Chat;
 [SignalRHub(ServerRoutes.Hubs.ChatHub)]
 public partial class ChatHub : Hub<IChatClientHub>
 {
-    private static readonly Dictionary<Guid, string> _connectionIds =
-        new Dictionary<Guid, string>();
+    private static readonly ConcurrentDictionary<Guid, string> _connectionIds =
+        new ConcurrentDictionary<Guid, string>();
     public static IReadOnlyDictionary<Guid, string> ConnectionIds => _connectionIds;
 
     private readonly ISender _sender;
@@ -43,7 +45,7 @@ public partial class ChatHub : Hub<IChatClientHub>
 
         if (result.IsError) return;
 
-        _connectionIds.Add(userId, Context.ConnectionId);
+        _connectionIds.AddOrUpdate(userId, Context.ConnectionId, (_, _) => Context.ConnectionId);
 
         foreach (var chatRoom in result.Value.ChatRooms)
         {
@@ -56,7 +58,7 @@ public partial class ChatHub : Hub<IChatClientHub>
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        _connectionIds.Remove(GetUserId());
+        _connectionIds.TryRemove(GetUserId(), out _);
         return base.OnDisconnectedAsync(exception);
     }
 

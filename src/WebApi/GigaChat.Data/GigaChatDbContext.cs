@@ -28,7 +28,6 @@ public class GigaChatDbContext : DbContext
 
     public GigaChatDbContext(DbContextOptions<GigaChatDbContext> options) : base(options)
     {
-        ChangeTracker.AutoDetectChangesEnabled = false;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
