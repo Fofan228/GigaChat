@@ -29,10 +29,12 @@ public class EditTextMessageCommandHandler : IRequestHandler<EditTextMessageComm
         var message = await _messageRepository.FindOneByIdAsync(request.TextMessageId, cancellationToken);
         if (message is null) throw new NotImplementedException();
 
-        if (message.UserId != request.UserId) throw new NotImplementedException();  
+        if (message.UserId != request.UserId) throw new NotImplementedException();
 
         message.Text = request.Text;
+
         await _messageRepository.UpdateAsync(message, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var @event = new EditTextMessageEvent(message);
         await _sender.Send(@event, cancellationToken);
