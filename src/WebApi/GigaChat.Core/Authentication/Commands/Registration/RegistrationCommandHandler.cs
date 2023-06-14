@@ -5,6 +5,7 @@ using GigaChat.Core.Common.Repositories.Interfaces;
 using GigaChat.Core.Common.Services.Interfaces;
 using GigaChat.Core.Common.Specifications.Users;
 using GigaChat.Core.Common.Entities.Users;
+using GigaChat.Core.Common.Errors;
 
 using MediatR;
 
@@ -33,7 +34,7 @@ public class RegistrationCommandHandler : IRequestHandler<RegistrationCommand, E
     {
         var spec = new UserByLoginSpecification(request.Login);
         if (await _userRepository.ExistsAsync(spec, cancellationToken))
-            throw new NotImplementedException();
+            return Errors.Users.UserWithLoginAlreadyExists(request.Login);
 
         var hashedPassword = _hashProvider.GetHash(request.Password);
         var user = new User(request.Name, request.Login, hashedPassword);

@@ -3,6 +3,7 @@ using ErrorOr;
 using GigaChat.Core.Common.Repositories.Common.Interfaces;
 using GigaChat.Core.Common.Repositories.Interfaces;
 using GigaChat.Core.Common.Entities.ChatRooms;
+using GigaChat.Core.Common.Errors;
 
 using MediatR;
 
@@ -32,7 +33,7 @@ public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, E
     public async Task<ErrorOr<Created>> Handle(OpenChatRoomCommand request, CancellationToken cancellationToken)
     {
         var owner = await _userRepository.FindOneByIdAsync(request.OwnerId, cancellationToken);
-        if (owner is null) throw new NotImplementedException();
+        if (owner is null) return Errors.Users.UserWithIdNotFound(request.OwnerId);
 
         var uniqueUserIds = request.UserIds.Distinct().ToList();
 

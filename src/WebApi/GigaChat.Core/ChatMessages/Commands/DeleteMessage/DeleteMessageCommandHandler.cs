@@ -3,6 +3,7 @@ using ErrorOr;
 using GigaChat.Core.ChatMessages.Events;
 using GigaChat.Core.Common.Repositories.Common.Interfaces;
 using GigaChat.Core.Common.Repositories.Interfaces;
+using GigaChat.Core.Common.Errors;
 
 using MediatR;
 
@@ -29,7 +30,7 @@ public class DeleteMessageCommandHandler : IRequestHandler<DeleteMessageCommand,
         var message = await _messageRepository.FindOneByIdAsync(request.MessageId, cancellationToken);
         if (message is null) throw new NotImplementedException();
 
-        if (message.UserId != request.UserId) throw new NotImplementedException();
+        if (message.UserId != request.UserId) return Errors.ChatMessages.UserIsNotOwnerForDelete;
 
         await _messageRepository.DeleteByIdAsync(message.Id, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

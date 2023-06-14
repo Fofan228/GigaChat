@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 
-using GigaChat.Core.Common.Entities.Users;
 using GigaChat.Core.Common.Repositories.Interfaces;
+using GigaChat.Core.Common.Errors;
 
 using MediatR;
 
@@ -21,7 +21,7 @@ public class ListUsersByChatRoomIdQueryHandler : IRequestHandler<ListUsersByChat
     public async Task<ErrorOr<ListUsersByChatRoomIdQueryResult>> Handle(ListUsersByChatRoomIdQuery request, CancellationToken cancellationToken)
     {
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
-        if (chatRoom is null) throw new NotImplementedException();
+        if (chatRoom is null) return Errors.ChatRooms.RoomWithIdNotFound(request.ChatRoomId);
         return new ListUsersByChatRoomIdQueryResult(chatRoom.Users);
     }
 }

@@ -3,6 +3,7 @@
 using GigaChat.Core.ChatRooms.Events;
 using GigaChat.Core.Common.Repositories.Common.Interfaces;
 using GigaChat.Core.Common.Repositories.Interfaces;
+using GigaChat.Core.Common.Errors;
 
 using MediatR;
 
@@ -31,15 +32,15 @@ public class InviteToChatRoomCommandHandler : IRequestHandler<InviteToChatRoomCo
         CancellationToken cancellationToken)
     {
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
-        if (chatRoom is null) throw new NotImplementedException();
+        if (chatRoom is null) return Errors.ChatRooms.RoomWithIdNotFound(request.ChatRoomId);
 
         var user = await _userRepository.FindOneByIdAsync(request.UserId, cancellationToken);
-        if (user is null) throw new NotImplementedException();
+        if (user is null) return Errors.Users.UserWithIdNotFound(request.UserId);
 
         if (request.OwnerId == chatRoom.OwnerId)
             chatRoom.Users.Add(user);
         else
-            throw new NotImplementedException();
+            return Errors.ChatRooms.UserIsNotOwnerForInvite;
 
         await _chatRoomRepository.UpdateAsync(chatRoom, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

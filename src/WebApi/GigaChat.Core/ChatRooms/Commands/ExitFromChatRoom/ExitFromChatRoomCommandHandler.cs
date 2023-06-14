@@ -3,6 +3,7 @@
 using GigaChat.Core.ChatRooms.Events;
 using GigaChat.Core.Common.Repositories.Common.Interfaces;
 using GigaChat.Core.Common.Repositories.Interfaces;
+using GigaChat.Core.Common.Errors;
 
 using MediatR;
 
@@ -31,10 +32,10 @@ public class ExitFromChatRoomCommandHandler : IRequestHandler<ExitFromChatRoomCo
         CancellationToken cancellationToken)
     {
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
-        if (chatRoom is null) throw new NotImplementedException();
+        if (chatRoom is null) return Errors.ChatRooms.RoomWithIdNotFound(request.ChatRoomId);
 
         var user = chatRoom.Users.FirstOrDefault(u => u.Id == request.UserId);
-        if (user is null) throw new NotImplementedException();
+        if (user is null) return Errors.Users.UserWithIdNotFound(request.UserId);
 
         chatRoom.Users.Remove(user);
 
