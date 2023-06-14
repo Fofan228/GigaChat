@@ -1,6 +1,7 @@
 import axios from "axios";
 import constants from "../constants";
 import {Token, User} from "../models/_index";
+import React from "react";
 
 function parseJwt (token: string) {
     if (token) {
@@ -31,7 +32,7 @@ export function getToken() {
     return sessionStorage.getItem(TOKEN_KEY) || ""
 }
 
-export async function registration(name: string, login: string, password: string) {
+export async function registration(name: string, login: string, password: string, errorHandler: (err: React.ReactNode) => void) {
     return await axios.post<Token>(constants.API_URL + constants.AUTH_URL + '/register', {
         name,
         login,
@@ -39,10 +40,21 @@ export async function registration(name: string, login: string, password: string
     })
         .then(r => {
             sessionStorage.setItem(TOKEN_KEY, r.data.token)
-            return  parseJwt(r.data.token)
+            return parseJwt(r.data.token)
         })
         .catch(e => {
-            console.log(e)
+            console.log(e.response.data.errors)
+            const errors = (
+                <div>
+                    {e.response.data.errors["Login"]}
+                    <br />
+                    {e.response.data.errors["Password"]}
+                    <br />
+                    {e.response.data.errors["Name"]}
+                </div>
+            )
+            console.log(errors)
+            errorHandler(errors)
         })
 }
 

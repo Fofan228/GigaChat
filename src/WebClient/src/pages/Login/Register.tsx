@@ -23,7 +23,13 @@ const Register = ({spinnerState}: RegistrationProps) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         spinnerState(true)
-        const user = await registration(userName, userLogin, password)
+        const user = await registration(userName, userLogin, password, (err) => {
+            noticeCtx?.showMessage({
+                message: err as string,
+                duration: 4000,
+                status: "error"
+            })
+        })
         if (user) {
             store?.mobxStore.refreshUser()
             store?.mobxStore.refreshToken()
@@ -33,13 +39,6 @@ const Register = ({spinnerState}: RegistrationProps) => {
                 message: `Вы успешно зарегистрировались, ${user.name}`
             })
             nav('/')
-        }
-        else {
-            noticeCtx?.showMessage({
-                status: "info",
-                duration: 3000,
-                message: "Не получилось зарегистрироваться!"
-            })
         }
         spinnerState(false)
     }
