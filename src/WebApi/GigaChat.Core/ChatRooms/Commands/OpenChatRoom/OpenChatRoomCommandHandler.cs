@@ -10,7 +10,7 @@ using GigaChat.Core.ChatRooms.Events;
 
 namespace GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
 
-public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, ErrorOr<OpenChatRoomCommandResult>>
+public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, ErrorOr<Created>>
 {
     private readonly ISender _sender;
     private readonly IChatRoomRepository _chatRoomRepository;
@@ -29,7 +29,7 @@ public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, E
         _sender = sender;
     }
 
-    public async Task<ErrorOr<OpenChatRoomCommandResult>> Handle(OpenChatRoomCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Created>> Handle(OpenChatRoomCommand request, CancellationToken cancellationToken)
     {
         var owner = await _userRepository.FindOneByIdAsync(request.OwnerId, cancellationToken);
         if (owner is null) throw new NotImplementedException();
@@ -48,6 +48,6 @@ public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, E
         var inviteToChatRoomEvent = new OpenChatRoomEvent(chatRoom);
         await _sender.Send(inviteToChatRoomEvent, cancellationToken);
 
-        return new OpenChatRoomCommandResult(chatRoom);
+        return Result.Created;
     }
 }

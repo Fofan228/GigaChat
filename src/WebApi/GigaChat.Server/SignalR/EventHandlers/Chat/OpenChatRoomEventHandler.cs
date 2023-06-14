@@ -41,7 +41,7 @@ public class OpenChatRoomEventHandler : IRequestHandler<OpenChatRoomEvent>
 
         //TODO Уведомление для участников чата при создании комнаты
         await _hubContext.Clients
-            .Users(userIds.Select(x => x.ToString()))
+            .Users(userIds.Where(id => id != request.ChatRoom.OwnerId).Select(id => id.ToString()))
             .SendInviteToChatRoom(sendInviteToChatRoomOutputModel);
 
         foreach (var userId in userIds)

@@ -2,7 +2,6 @@ using GigaChat.Contracts.Hubs.ChatRoom.Models.Input;
 using GigaChat.Core.ChatRooms.Commands.CloseChatRoom;
 using GigaChat.Core.ChatRooms.Commands.ExitFromChatRoom;
 using GigaChat.Core.ChatRooms.Commands.InviteToChatRoom;
-using GigaChat.Core.ChatRooms.Commands.KickFromChatRoom;
 using GigaChat.Core.ChatRooms.Commands.OpenChatRoom;
 
 namespace GigaChat.Server.SignalR.Hubs.Chat;
@@ -17,7 +16,6 @@ public partial class ChatHub
 
     public async Task CloseChatRoom(CloseChatRoomInputModel inputModel)
     {
-        //TODO Фронт
         var request = _mapper.Map<CloseChatRoomCommand>((GetUserId(), inputModel));
         await _sender.Send(request);
     }
@@ -28,11 +26,10 @@ public partial class ChatHub
         await _sender.Send(request);
     }
 
-    public async Task KickFromChatRoom(KickFromChatRoomInputModel inputModel)
+    public Task KickFromChatRoom()
     {
         //TODO Фронт
-        var request = _mapper.Map<KickFromChatRoomCommand>((GetUserId(), inputModel));
-        await _sender.Send(request);
+        return Task.CompletedTask;
     }
 
     public async Task ExitFromChatRoom(ExitFromChatRoomInputModel inputModel)
