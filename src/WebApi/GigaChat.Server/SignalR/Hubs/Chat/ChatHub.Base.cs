@@ -1,5 +1,7 @@
 using System.Collections.Concurrent;
 
+using ErrorOr;
+
 using GigaChat.Contracts.Common.Dto;
 using GigaChat.Contracts.Common.Routes;
 using GigaChat.Contracts.Hubs.ChatRoom;
@@ -43,7 +45,7 @@ public partial class ChatHub : Hub<IChatClientHub>
         var query = new ListUserChatRoomsQuery(userId);
         var result = await _sender.Send(query, Context.ConnectionAborted);
 
-        if (result.IsError) return;
+        if (result.IsError) await Clients.Caller.SendError(result.Errors.Select(e => e.ToString()));
 
         _connectionIds.AddOrUpdate(userId, Context.ConnectionId, (_, _) => Context.ConnectionId);
 
@@ -65,4 +67,9 @@ public partial class ChatHub : Hub<IChatClientHub>
     /// <exception cref="ArgumentNullException" />
     /// <exception cref="FormatException" />
     private Guid GetUserId() => Guid.Parse(Context.UserIdentifier!);
+
+    private Task SendToCallerErrors(IEnumerable<Error> errors)
+    {
+        return Clients.Caller.SendError(errors.Select(e => e.ToString()));
+    }
 }

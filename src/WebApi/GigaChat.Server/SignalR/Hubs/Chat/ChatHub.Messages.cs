@@ -10,18 +10,21 @@ public partial class ChatHub
     public async Task SendTextMessage(SendTextMessageInputModel inputModel)
     {
         var request = _mapper.Map<SendTextMessageCommand>((GetUserId(), inputModel));
-        await _sender.Send(request);
+        var result = await _sender.Send(request);
+        if (result.IsError) await SendToCallerErrors(result.Errors);
     }
 
     public async Task EditTextMessage(EditTextMessageInputModel inputModel)
     {
         var request = _mapper.Map<EditTextMessageCommand>((GetUserId(), inputModel));
-        await _sender.Send(request);
+        var result = await _sender.Send(request);
+        if (result.IsError) await SendToCallerErrors(result.Errors);
     }
 
     public async Task DeleteMessage(DeleteMessageInputModel inputModel)
     {
         var request = _mapper.Map<DeleteMessageCommand>((GetUserId(), inputModel));
-        await _sender.Send(request);
+        var result = await _sender.Send(request);
+        if (result.IsError) await SendToCallerErrors(result.Errors);
     }
 }

@@ -5,7 +5,7 @@ namespace GigaChat.Contracts.Hubs.ChatRoom;
 
 public interface IChatClientHub
 {
-    Task SendError(string[] errors);
+    Task SendError(IEnumerable<string> errors);
     Task SendUserChatRooms(SendUserChatRoomsOutputModel outputModel);
     Task SendOpenChatRoom(SendOpenChatRoomOutputModel outputModel);
     Task SendCloseChatRoom(CloseChatRoomOutputModel outputModel);

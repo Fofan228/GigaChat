@@ -11,19 +11,22 @@ public partial class ChatHub
     public async Task OpenChatRoom(OpenChatRoomInputModel inputModel)
     {
         var request = _mapper.Map<OpenChatRoomCommand>((GetUserId(), inputModel));
-        await _sender.Send(request);
+        var result = await _sender.Send(request);
+        if (result.IsError) await SendToCallerErrors(result.Errors);
     }
 
     public async Task CloseChatRoom(CloseChatRoomInputModel inputModel)
     {
         var request = _mapper.Map<CloseChatRoomCommand>((GetUserId(), inputModel));
-        await _sender.Send(request);
+        var result = await _sender.Send(request);
+        if (result.IsError) await SendToCallerErrors(result.Errors);
     }
 
     public async Task InviteToChatRoom(InviteToChatRoomInputModel inputModel)
     {
         var request = _mapper.Map<InviteToChatRoomCommand>((GetUserId(), inputModel));
-        await _sender.Send(request);
+        var result = await _sender.Send(request);
+        if (result.IsError) await SendToCallerErrors(result.Errors);
     }
 
     public Task KickFromChatRoom()
@@ -35,6 +38,7 @@ public partial class ChatHub
     public async Task ExitFromChatRoom(ExitFromChatRoomInputModel inputModel)
     {
         var request = _mapper.Map<ExitFromChatRoomCommand>((GetUserId(), inputModel));
-        await _sender.Send(request);
+        var result = await _sender.Send(request);
+        if (result.IsError) await SendToCallerErrors(result.Errors);
     }
 }
