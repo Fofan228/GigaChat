@@ -111,6 +111,18 @@ export const ChatContextProvider = observer(() => {
         msg.textMessage.userName = msg.username
         setMessages([...messages, msg.textMessage])
     })
+    connect?.connection?.on("SendEditTextMessage", (msg: {textMessage: Message}) => {
+        setMessages(messages.map(m => {
+            if (m.id === msg.textMessage.id) {
+                console.log(m, msg.textMessage)
+                m.text = msg.textMessage.text
+            }
+            return m
+        }))
+    })
+    connect?.connection?.on("SendDeleteMessage", (msg: {message: Message}) => {
+        setMessages(messages.filter(m => m.id !== msg.message.id))
+    })
 
     return (
         <ChatContext.Provider value={{messages, connectedUsers, sendMessage}}>
