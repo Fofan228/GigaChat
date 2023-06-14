@@ -46,11 +46,11 @@ export const ChatContextProvider = observer(() => {
             if (m)
                 setMessages(m)
             console.log(m, 'все сообщения')
-            const u = await axios.get<User[]>(constants.API_URL + "/users?chatRoomId=" + chatInfo?.id, {
+            const u = await axios.get<{users: User[]}>(constants.API_URL + "/users?chatRoomId=" + chatInfo?.id, {
                 headers: {
                     Authorization: `Bearer ${store?.mobxStore.token}`
                 }
-            }).then(r => r.data)
+            }).then(r => r.data.users)
                 .catch(() => notification?.showMessage({
                     message: "Не удалось загрузить список пользователей",
                     status: "error",

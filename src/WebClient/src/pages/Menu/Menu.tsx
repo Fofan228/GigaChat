@@ -47,7 +47,7 @@ const Menu = () => {
                                                      })
                                                      connect?.connection?.invoke("OpenChatRoom", {
                                                          title,
-                                                         usersIds
+                                                         userIds: usersIds
                                                      }).then(r => {
                                                          console.log(r, 'успешно')
                                                      }).catch(e => {
