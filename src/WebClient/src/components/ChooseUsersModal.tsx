@@ -19,14 +19,14 @@ import SendIcon from "@mui/icons-material/Send";
 import {observer} from "mobx-react-lite";
 
 interface IChooseUsersModal {
-    title: boolean
+    needsTitle: boolean
     open: boolean,
     setOpen: (open: boolean) => void
     filterByUserId: string[]
     submit: (title: string, userIds: string[]) => void
 }
 
-const ChooseUsersModal = observer(({open, setOpen, filterByUserId, submit}: IChooseUsersModal) => {
+const ChooseUsersModal = observer(({open, setOpen, filterByUserId, submit, needsTitle}: IChooseUsersModal) => {
 
     const style = {
         position: 'absolute' as 'absolute',
@@ -114,20 +114,20 @@ const ChooseUsersModal = observer(({open, setOpen, filterByUserId, submit}: ICho
                             </List>
                             <Box sx={{display: 'flex', flexDirection: "column", gap: "6px"}}>
                                 {
-
+                                    needsTitle && <Input value={title} placeholder={'Название чата'}
+                                                         onChange={e => setTitle(e.target.value)}/>
                                 }
-                                <Input value={title} placeholder={'Название чата'}
-                                       onChange={e => setTitle(e.target.value)}/>
+
 
                                 <Button variant="contained" endIcon={<SendIcon/>} onClick={() => {
-                                    if (title.length > 0 && checked.length > 0) {
+                                    if ((title.length > 0 || !needsTitle) && checked.length > 0) {
                                         submit(title, checked)
                                         setChecked([])
                                         setTitle("")
                                         setOpen(false)
                                     }
                                 }}>
-                                    {title ? "Создать" : "Добавить"}
+                                    {needsTitle ? "Создать" : "Добавить"}
                                 </Button>
                             </Box>
                         </>

@@ -8,12 +8,8 @@ const Users = () => {
     const chatCtx = useContext(ChatContext);
 
     return (
-        <Grid item md={3} sx={{
-            overflowY: 'auto',
-            display: { xs: "none", sm: "block" }
-        }}>
-            <List>
-
+        <Grid item md={3} sx={{ display: { xs: "none", sm: "block" } }}>
+            <List sx={{ overflowY: "auto", maxHeight: "100%" }}>
                 {chatCtx?.connectedUsers.map((user, index) => (
                     <ListItem key={`user_${index}`}>
                         <ListItemIcon>

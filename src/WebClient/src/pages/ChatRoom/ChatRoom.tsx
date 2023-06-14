@@ -34,6 +34,21 @@ const ChatRoom = () => {
         }
     }, [chatCtx?.messages]);
 
+    function submitHandler(title: string, userIds: string[]) {
+        userIds.forEach(newUser => {
+            connect?.connection?.invoke("InviteToChatRoom", {
+                userId: newUser,
+                chatRoomId: chatInfo?.id
+            }).catch((e) => {
+                console.log(e)
+                notification?.showMessage({
+                    message: "Не удалось добавить пользователя с id = " + newUser,
+                    status: "error",
+                    duration: 1500
+                })
+            })
+        })
+    }
 
     return (
         <Grid container component={Paper} direction="row" sx={{
@@ -43,23 +58,9 @@ const ChatRoom = () => {
         }} spacing={2}>
             {openUserAdd && <ChooseUsersModal open={openUserAdd}
                                               setOpen={setOpenUserAdd}
-                                              title={false}
+                                              needsTitle={false}
                                               filterByUserId={chatCtx!!.connectedUsers.map(us => us.id)}
-                                              submit={(title, userIds) => {
-                                                  userIds.forEach(newUser => {
-                                                      connect?.connection?.invoke("InviteToChatRoom", {
-                                                          userId: newUser,
-                                                          chatRoomId: chatInfo?.id
-                                                      }).catch((e) => {
-                                                          console.log(e)
-                                                          notification?.showMessage({
-                                                              message: "Не удалось добавить пользователя с id = " + newUser,
-                                                              status: "error",
-                                                              duration: 1500
-                                                          })
-                                                      })
-                                                  })
-                                              }} />}
+                                              submit={submitHandler} />}
             <Grid item xs={12}
                   sx={{
                       display: 'flex', alignItems: 'center',
@@ -79,10 +80,17 @@ const ChatRoom = () => {
                         setOpenUserAdd(true)
                     }}/>
                     <LogoutIcon color={'warning'} sx={{cursor: 'pointer', ml: 2}} onClick={() => {
-                        connect?.connection?.invoke("ExitFromChatRoom", chatInfo?.id)
+                        connect?.connection?.invoke("ExitFromChatRoom", {chatRoomId: chatInfo?.id})
+                            .catch(e => {
+                                console.log(e)
+                                notification?.showMessage({
+                                    message: "Не удалось покинуть чат",
+                                    status: "error",
+                                    duration: 2000
+                                })
+                            })
                     }}/>
                 </Box>
-
 
             </Grid>
 
@@ -131,9 +139,7 @@ const ChatRoom = () => {
 
                 <Divider sx={{marginRight: '16px'}}/>
 
-                <SendMessage onSendMessage={chatCtx?.sendMessage ??
-                    ((message: string) => {
-                    })}/>
+                <SendMessage onSendMessage={chatCtx!!.sendMessage} />
 
             </Grid>
 

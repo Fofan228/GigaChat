@@ -36,7 +36,9 @@ export const ConnectContextProvider = observer(({ children }: { children: ReactN
             startConnection(connection)
                 .then(() => {
                     setConnectionStarted(true)
-                    connection.on("SendUserChatRooms", (rooms: {chatRooms: Room[]}) => store?.mobxStore.setChats(rooms.chatRooms))
+                    connection.on("SendUserChatRooms", (rooms: {chatRooms: Room[]}) => {
+                        store?.mobxStore.setChats(rooms.chatRooms)
+                    })
                     connection.on("SendOpenChatRoom", (room: {chatRoom: Room}) => {
                         store?.mobxStore.setChats([...store?.mobxStore.myChats, room.chatRoom])
                         notification?.showMessage({
@@ -45,7 +47,7 @@ export const ConnectContextProvider = observer(({ children }: { children: ReactN
                             duration: 5000
                         })
                         nav('/chat', {
-                            state: JSON.stringify(room)
+                            state: JSON.stringify(room.chatRoom)
                         })
                     })
                     connection.on("SendInviteToChatRoom", (room: {chatRoom: Room}) => {

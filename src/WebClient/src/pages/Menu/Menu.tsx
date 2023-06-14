@@ -38,7 +38,7 @@ const Menu = () => {
             >
                 {usersModal && <ChooseUsersModal open={usersModal}
                                                  setOpen={setUsersModal}
-                                                 title={true}
+                                                 needsTitle={true}
                                                  filterByUserId={[store!!.mobxStore!!.user!!.id]}
                                                  submit={(title, usersIds) => {
                                                      console.log({
@@ -73,7 +73,12 @@ const Menu = () => {
                 </Typography>
             </Grid>
 
-            <Chats/>
+            <Grid item md={3}
+                  sx={{
+                      height: '90%'
+                  }}>
+                <Chats/>
+            </Grid>
 
             <Grid item xs={12} md={9}
                   sx={{

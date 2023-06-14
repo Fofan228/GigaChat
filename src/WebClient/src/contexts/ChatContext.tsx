@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {Message, NamedMessage, Room, User} from "../models/_index";
-import {Outlet, useLocation} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {ConnectContext, NotificationContext, StoreContext} from "./_index";
 import {observer} from "mobx-react-lite";
 import axios from "axios";
@@ -19,6 +19,7 @@ export const ChatContextProvider = observer(() => {
     const connect = useContext(ConnectContext)
     const notification = useContext(NotificationContext)
     const store = useContext(StoreContext)
+    const nav = useNavigate()
 
     const location = useLocation();
     const chatInfo: Room | undefined = JSON.parse(location?.state)
@@ -28,25 +29,7 @@ export const ChatContextProvider = observer(() => {
 
     useEffect(() => {
         async function fetchChatData() {
-            const m = await axios.get<{ messages: NamedMessage[], logins: string[] }>(
-                constants.API_URL + "/messages?ChatRoomId=" + chatInfo?.id, {
-                    headers: {
-                        Authorization: `Bearer ${store?.mobxStore.token}`
-                    }
-                })
-                .then(r => {
-                    r.data.messages.forEach((msg, idx) => msg.userName = r.data.logins[idx])
-                    return r.data.messages
-                })
-                .catch(() => notification?.showMessage({
-                    message: "Не удалось загрузить сообщения",
-                    status: "error",
-                    duration: 3000
-                }))
-            if (m)
-                setMessages(m)
-            console.log(m, 'все сообщения')
-            const u = await axios.get<{users: User[]}>(constants.API_URL + "/users?chatRoomId=" + chatInfo?.id, {
+            const u = await axios.get<{users: User[]}>(constants.API_URL + "/users/" + chatInfo?.id, {
                 headers: {
                     Authorization: `Bearer ${store?.mobxStore.token}`
                 }
@@ -56,8 +39,27 @@ export const ChatContextProvider = observer(() => {
                     status: "error",
                     duration: 3000
                 }))
-            if (u)
+            if (u) {
                 setConnectedUsers(u)
+                const m = await axios.get<{ messages: NamedMessage[], logins: string[] }>(
+                    constants.API_URL + "/messages?ChatRoomId=" + chatInfo?.id, {
+                        headers: {
+                            Authorization: `Bearer ${store?.mobxStore.token}`
+                        }
+                    })
+                    .then(r => {
+                        console.log(r.data, 'ВСЕ СООБЩЕНИЯ')
+                        r.data.messages.forEach(msg => msg.userName = u.find(e => e.id === msg.userId)?.login || "Ошибка")
+                        return r.data.messages
+                    })
+                    .catch(() => notification?.showMessage({
+                        message: "Не удалось загрузить сообщения",
+                        status: "error",
+                        duration: 3000
+                    }))
+                if (m)
+                    setMessages(m)
+            }
         }
 
         fetchChatData().then()
@@ -88,7 +90,7 @@ export const ChatContextProvider = observer(() => {
     })
     connect?.connection?.on("SendExitedUserFromChatRoom", (user: { userId: string }) => {
         const userDel = connectedUsers.find(u => u.id == user.userId)
-        setConnectedUsers(connectedUsers.filter(u => u.id === user.userId))
+        setConnectedUsers(connectedUsers.filter(u => u.id !== user.userId))
         notification?.showMessage({
             message: `${userDel?.name ?? "АНОНИМУС"} вышел из чата`,
             status: "info",
@@ -97,16 +99,16 @@ export const ChatContextProvider = observer(() => {
     })
 
     connect?.connection?.on("SendExitFromChatRoom", (room: { chatRoomId: number }) => {
-        const title = store?.mobxStore.myChats.find(c => c.id == room.chatRoomId)
-        store?.mobxStore.setChats(store?.mobxStore.myChats.filter(c => c.id == room.chatRoomId))
+        store?.mobxStore.setChats(store?.mobxStore.myChats.filter(c => c.id !== room.chatRoomId))
         notification?.showMessage({
-            message: `Вы вышли из чата ${title}`,
+            message: `Вы успешно покинули чат`,
             status: "info",
             duration: 3000
         })
+        nav('/')
     })
-    connect?.connection?.on("SendTextMessage", (msg: { textMessage: NamedMessage, userName: string }) => {
-        msg.textMessage.userName = msg.userName
+    connect?.connection?.on("SendTextMessage", (msg: { textMessage: NamedMessage, username: string }) => {
+        msg.textMessage.userName = msg.username
         setMessages([...messages, msg.textMessage])
     })
 

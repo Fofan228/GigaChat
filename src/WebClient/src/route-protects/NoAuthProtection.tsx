@@ -4,7 +4,7 @@ import {StoreContext} from "../contexts/_index";
 
 const NoAuthProtect = () => {
     const userContext = useContext(StoreContext)
-    if (userContext && userContext.user == null)
+    if (userContext && userContext.mobxStore.user == null)
         return <Outlet />
     return <Navigate to={'/'} />
 };
