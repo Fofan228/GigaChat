@@ -31,12 +31,13 @@ public class OpenChatRoomCommandHandler : IRequestHandler<OpenChatRoomCommand, E
 
     public async Task<ErrorOr<OpenChatRoomCommandResult>> Handle(OpenChatRoomCommand request, CancellationToken cancellationToken)
     {
-        if (!await _userRepository.ExistsWithIdAsync(request.OwnerId, cancellationToken))
-            throw new NotImplementedException();
+        var owner = await _userRepository.FindOneByIdAsync(request.OwnerId, cancellationToken);
+        if (owner is null) throw new NotImplementedException();
 
         var uniqueUserIds = request.UserIds.Distinct().ToList();
 
         var users = await _userRepository.FindManyByIds(uniqueUserIds)
+            .Append(owner)
             .ToListAsync(cancellationToken);
 
         var chatRoom = new ChatRoom(request.OwnerId, request.Title) { Users = users };

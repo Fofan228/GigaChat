@@ -27,7 +27,7 @@ public class OpenChatRoomEventHandler : IRequestHandler<OpenChatRoomEvent>
 
     public async Task Handle(OpenChatRoomEvent request, CancellationToken cancellationToken)
     {
-        var chatRoomOutputDto = _mapper.Map<ChatRoomOutputDto>(request);
+        var chatRoomOutputDto = _mapper.Map<ChatRoomOutputDto>(request.ChatRoom);
 
         var sendInviteToChatRoomOutputModel = new SendInviteToChatRoomOutputModel(chatRoomOutputDto);
         var sendOpenChatRoomOutputModel = new SendOpenChatRoomOutputModel(chatRoomOutputDto);
