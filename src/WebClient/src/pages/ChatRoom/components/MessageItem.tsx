@@ -87,7 +87,6 @@ const MessageItem = observer((msg: NamedMessage) => {
                                             }}>
                                                 <SendIcon/>
                                             </Button>
-
                                         </Paper>
                                     ) : (
                                         <>

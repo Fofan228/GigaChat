@@ -5,6 +5,7 @@ import {NotificationContext, StoreContext} from "./_index";
 import {Room} from "../models/Room";
 import {observer} from "mobx-react-lite";
 import {useNavigate} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 
 interface IConnectContext {
     connection?: HubConnection
@@ -13,7 +14,7 @@ interface IConnectContext {
 
 export const ConnectContext = createContext<IConnectContext | null>(null)
 
-export const ConnectContextProvider = observer(({ children }: { children: ReactNode }) => {
+export const ConnectContextProvider = observer(() => {
 
     const [connection, setConnection] = useState<HubConnection>()
     const [connectionStarted, setConnectionStarted] = useState(false)
@@ -64,7 +65,7 @@ export const ConnectContextProvider = observer(({ children }: { children: ReactN
 
     return (
         <ConnectContext.Provider value={{connection, connectionStarted}}>
-            {children}
+            <Outlet />
         </ConnectContext.Provider>
     )
 })

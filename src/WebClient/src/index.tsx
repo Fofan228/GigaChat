@@ -18,9 +18,7 @@ root.render(
                 <CssBaseline/>
                 <NotificationProvider>
                     <StoreContextProvider>
-                        <ConnectContextProvider>
-                            <App/>
-                        </ConnectContextProvider>
+                        <App/>
                     </StoreContextProvider>
                 </NotificationProvider>
             </ThemeProvider>

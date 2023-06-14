@@ -6,7 +6,7 @@ import {AuthProtect} from "./route-protects/_index"
 import {Login} from "./pages/_index"
 import NotFound from "./pages/Errors/NotFound"
 import {RoomsLayer} from "./logic-layers/RoomsLayer"
-import {ChatContextProvider} from "./contexts/_index"
+import {ChatContextProvider, ConnectContextProvider} from "./contexts/_index"
 import ChatRoom from "./pages/ChatRoom/ChatRoom"
 
 const App = () => {
@@ -16,11 +16,13 @@ const App = () => {
                 <Route path={'auth'} element={<Login/>}/>
 
                 <Route element={<AuthProtect/>}>
-                    <Route element={<RoomsLayer/>}>
-                        <Route index element={<Menu/>}/>
-                    </Route>
-                    <Route element={<ChatContextProvider/>}>
-                        <Route path={'chat'} element={<ChatRoom/>}/>
+                    <Route element={<ConnectContextProvider />}>
+                        <Route element={<RoomsLayer/>}>
+                            <Route index element={<Menu/>}/>
+                        </Route>
+                        <Route element={<ChatContextProvider/>}>
+                            <Route path={'chat'} element={<ChatRoom/>}/>
+                        </Route>
                     </Route>
                 </Route>
 
