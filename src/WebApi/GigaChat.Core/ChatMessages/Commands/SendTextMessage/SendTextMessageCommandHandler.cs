@@ -1,7 +1,9 @@
 using ErrorOr;
+
 using GigaChat.Core.Common.Repositories.Common.Interfaces;
 using GigaChat.Core.Common.Repositories.Interfaces;
 using GigaChat.Core.Common.Entities.ChatMessages;
+using GigaChat.Core.Common.Errors;
 
 using MediatR;
 using GigaChat.Core.ChatMessages.Events;
@@ -37,9 +39,9 @@ public class SendTextMessageCommandHandler : IRequestHandler<SendTextMessageComm
         var user = await _userRepository.FindOneByIdAsync(request.UserId, cancellationToken);
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
 
-        if (user is null) throw new NotImplementedException();
-        if (chatRoom is null) throw new NotImplementedException();
-        if (!chatRoom.Users.Any(u => u.Id == user.Id)) throw new NotImplementedException();
+        if (user is null) return Errors.Users.UserWithIdNotFound(request.UserId);
+        if (chatRoom is null) return Errors.ChatRooms.RoomWithIdNotFound(request.ChatRoomId);
+        if (!chatRoom.Users.Any(u => u.Id == user.Id)) return Errors.ChatRooms.ChatRoomNotContainUserForSendMessage;
 
         var chatMessage = new ChatMessage(request.Text, request.ChatRoomId, request.UserId);
 

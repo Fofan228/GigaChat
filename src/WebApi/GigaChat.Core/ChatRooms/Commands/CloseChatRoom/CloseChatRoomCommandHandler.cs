@@ -3,6 +3,7 @@ using ErrorOr;
 using GigaChat.Core.ChatRooms.Events;
 using GigaChat.Core.Common.Repositories.Common.Interfaces;
 using GigaChat.Core.Common.Repositories.Interfaces;
+using GigaChat.Core.Common.Errors;
 
 using MediatR;
 
@@ -29,8 +30,8 @@ public class CloseChatRoomCommandHandler : IRequestHandler<CloseChatRoomCommand,
     {
         var chatRoom = await _chatRoomRepository.FindOneByIdAsync(request.ChatRoomId, cancellationToken);
 
-        if (chatRoom is null) throw new NotImplementedException();
-        if (chatRoom.OwnerId != request.UserId) throw new NotImplementedException();
+        if (chatRoom is null) return Errors.ChatRooms.RoomWithIdNotFound(request.ChatRoomId);
+        if (chatRoom.OwnerId != request.UserId) return Errors.ChatRooms.UserIsNotOwnerForDelete;
 
         chatRoom.IsDeleted = true;
 
