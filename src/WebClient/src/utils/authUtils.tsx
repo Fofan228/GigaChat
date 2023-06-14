@@ -43,14 +43,19 @@ export async function registration(name: string, login: string, password: string
             return parseJwt(r.data.token)
         })
         .catch(e => {
-            console.log(e.response.data.errors)
-            const errors = (
+            console.log(e.response.data.errors, e, 'ошибки')
+            const errors = e.response?.data?.errors ? (
                 <div>
-                    {e.response.data.errors["Login"]}
+                    {e.response.data.errors.Login}
                     <br />
-                    {e.response.data.errors["Password"]}
+                    {e.response.data.errors.Password}
                     <br />
-                    {e.response.data.errors["Name"]}
+                    {e.response.data.errors.Name}
+
+                </div>
+            ) : (
+                <div>
+                    {e?.response?.data?.title}
                 </div>
             )
             console.log(errors)

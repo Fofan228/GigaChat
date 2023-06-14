@@ -42,7 +42,7 @@ const ChatRoom = () => {
             }).catch((e) => {
                 console.log(e)
                 notification?.showMessage({
-                    message: "Не удалось добавить пользователя с id = " + newUser,
+                    message: "Не удалось добавить пользователя с id = " + newUser + ", вы не создатель чата",
                     status: "error",
                     duration: 1500
                 })

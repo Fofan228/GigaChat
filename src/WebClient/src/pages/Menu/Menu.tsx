@@ -69,7 +69,7 @@ const Menu = () => {
                 </IconButton>
 
                 <Typography variant="h5" color="primary.main">
-                    Чаты
+                    Вы - {store?.mobxStore.user?.name}
                 </Typography>
             </Grid>
 
